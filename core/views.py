@@ -6,6 +6,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+
+from .models import Book
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -14,11 +16,6 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from .decorators import anonymous_required
 from django.utils.decorators import method_decorator
-
-
-def home(request):
-    count = User.objects.count()
-    return render(request, 'core/home.html', {'count': count})
 
 
 def create_account(self, form):
@@ -80,3 +77,18 @@ def activate(request, uidb64, token):
         return redirect('home')
     else:
         return HttpResponse('Activation link is invalid!')
+
+
+def products(request):
+    context = {
+        'items': Book.objects.all()
+    }
+    return render(request, "core/products.html", context)
+
+
+def checkout(request):
+    return render(request, "core/checkout.html")
+
+
+def home(request):
+    return render(request, "core/home.html")
