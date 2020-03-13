@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
-from django.views.generic import CreateView
+from django.utils import timezone
+from django.views.generic import CreateView, DetailView, ListView
 from .forms import SignUpForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-
-from .models import Book
+from .models import Book, OrderBook, Order
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -79,16 +79,64 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
-def products(request):
-    context = {
-        'items': Book.objects.all()
-    }
-    return render(request, "core/products.html", context)
+class HomeView(ListView):
+    model = Book
+    template_name = "core/home.html"
+
+
+class BookDetailView(DetailView):
+    model = Book
+    template_name = "core/product.html"
 
 
 def checkout(request):
     return render(request, "core/checkout.html")
 
 
-def home(request):
-    return render(request, "core/home.html")
+def add_to_cart(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+    order_book, created = OrderBook.objects.get_or_create(book=book, user=request.user, ordered=False)
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.books.filter(book__slug=book.slug).exists():
+            order_book.quantity += 1
+            order_book.save()
+            messages.info(request, "This book quantity was updated.")
+            return redirect("core:product", slug=slug)
+        else:
+            order.books.add(order_book)
+            messages.success(request, "This book was added to your cart.")
+            return redirect("core:product", slug=slug)
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date)
+        order.books.add(order_book)
+        messages.success(request, "This book was added to your cart.")
+        return redirect("core:product", slug=slug)
+
+
+def remove_from_cart(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.books.filter(book__slug=book.slug).exists():
+            order_book = OrderBook.objects.filter(
+                book=book,
+                user=request.user,
+                ordered=False
+            )[0]
+            order.books.remove(order_book)
+            messages.warning(request, "This book was removed from your cart.")
+            return redirect("core:product", slug=slug)
+        else:
+            messages.error(request, "This book was not in your cart")
+            return redirect("core:product", slug=slug)
+    else:
+        messages.error(request, "You do not have an active order")
+        return redirect("core:product", slug=slug)
