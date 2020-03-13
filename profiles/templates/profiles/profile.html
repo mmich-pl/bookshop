@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div class="content-section">
+                   <div class="media">
+                       <div class="col-3">
+                           <div class="row">                       <img class="rounded-circle account-img" src="{{ profile.picture.url }}">
+</div>
+                           <div class="row">                       <button class="mx-auto"><a href="{% url 'profile_edit' profile.user.pk %}"><i class="fas fa-user-edit"></i> Edit</a></button>
+</div>
+                       </div>
+                        <div class="media-body">
+                            <div class="row">
+                                <div class="col-11">
+                                    <h2 class="account-heading">{{ profile.first_name|default_if_none:user.username }} {{ profile.last_name|default_if_none:"" }}</h2>
+                                </div>
+                            </div>
+                            <hr>
+                            <p class="text-secondary"><span class="mx-4 my-4"><i class="fas fa-envelope-open-text"></i></span>{{ profile.user.email|default_if_none:"brak danych" }}</p>
+                            <hr>
+                    </div>
+                  </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+

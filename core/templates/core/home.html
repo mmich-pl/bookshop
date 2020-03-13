@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_teacher %}
+  <h2>Homepage</h2>
+  <p>Welcome to My Site, {% if user.is_authenticated %}{{ user.username }}{% else %}visitor{% endif %}!</p>
+  <p>
+    <strong>Total users registered: </strong> {{ count }}
+  </p>
+    {% else %}
+    <h2>Homepage</h2>
+  <p>Welcome to My Site, {% if user.is_authenticated %}{{ user.username }}{% else %}visitor{% endif %}!</p>
+  <p>
+    {% endif %}
+
+{% if user.is_authenticated and user.is_teacher%}
+<div class="row">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="card-box">
+                <h6>Projects</h6>
+                <ul class="list-unstyled">
+                    {% for project in projects %}
+                        <a href="{% url 'project' pk=project.id %}"><li>{{ project.name }}</li></a>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-6 col-xs-12">
+            <div class="card-box">
+                <h6>Last sent files</h6>
+                <ul class="list-unstyled">
+
+                </ul>
+            </div>
+        </div>
+</div>
+{% endif %}
+
+{% endblock %}
