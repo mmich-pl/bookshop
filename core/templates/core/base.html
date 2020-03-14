@@ -11,7 +11,25 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'core/css/mdb.css' %}" rel="stylesheet">
-  <link href="{% static 'core/css/style.min.css' %}" rel="stylesheet">
+  <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+     <style type="text/css">
+    html, body, header, .carousel {
+      height: 60vh;
+    }
+
+    @media (max-width: 740px) {
+        html, body, header, .carousel {
+        height: 100vh;
+      }
+    }
+
+    @media (min-width: 800px) and (max-width: 850px) {
+        html, body, header, .carousel {
+        height: 100vh;
+      }
+    }
+
+  </style>
 </head>
 
 {% include "core/navbar.html" %}

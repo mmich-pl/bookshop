@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import reverse
 
-CATEGORY_CHOICES =(
+CATEGORY_CHOICES = (
     ('C', 'Chemistry'),
     ('B', 'Biology'),
     ('E', 'English'),
@@ -32,33 +32,27 @@ class Book(models.Model):
     title = models.CharField(max_length=100)
     author = models.TextField()
     publisher = models.TextField()
-    original_price = models.FloatField(blank=True, null=True)
     price = models.FloatField(default=0)
+    discount_price = models.FloatField(default=price)
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
     numbers_of_entries = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("core:product", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:product", kwargs={'slug': self.slug})
 
     def get_add_to_cart_url(self):
-        return reverse("core:add-to-cart", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:add_to_cart", kwargs={'slug': self.slug})
 
     def get_remove_from_cart_url(self):
-        return reverse("core:remove-from-cart", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:remove_from_cart", kwargs={'slug': self.slug})
 
 
 class OrderBook(models.Model):
@@ -70,6 +64,20 @@ class OrderBook(models.Model):
     def __str__(self):
         return f"{self.quantity} of {self.book.title}"
 
+    def get_total_book_price(self):
+        return self.quantity * self.book.price
+
+    def get_total_discount_book_price(self):
+        return self.quantity * self.book.discount_price
+
+    def get_amount_saved(self):
+        return self.get_total_book_price() - self.get_total_discount_book_price()
+
+    def get_final_price(self):
+        if self.book.discount_price:
+            return self.get_total_discount_book_price()
+        return self.get_total_book_price()
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -80,3 +88,9 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def get_total(self):
+        total = 0
+        for order_item in self.books.all():
+            total += order_item.get_final_price()
+        return total
