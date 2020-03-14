@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView
 from .forms import SignUpForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -16,6 +16,8 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from .decorators import anonymous_required
 from django.utils.decorators import method_decorator
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def create_account(self, form):
@@ -74,19 +76,46 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user)
         messages.success(request, 'Your account is active!')
-        return redirect('home')
+        return redirect('core:home')
     else:
         return HttpResponse('Activation link is invalid!')
 
 
-class HomeView(ListView):
-    model = Book
-    template_name = "core/home.html"
+def home(request):
+    book_list = Book.objects.all().order_by('-date')
+    query = request.GET.get('q')
+    if query:
+        book_list = Book.objects.filter(
+            Q(title__icontains=query) | Q(category__icontains=query) |
+            Q(author__contains=query) | Q(publisher__contains=query)
+        ).distinct()
+
+    paginator = Paginator(book_list, 12)
+    page = request.GET.get('page')
+
+    try:
+        books = paginator.page(page)
+    except PageNotAnInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.page(paginator.num_pages)
+
+    context = {
+        'books': books,
+        'latest': Book.objects.order_by('-date_posted')[:4],
+    }
+    return render(request, "core/home.html", context)
 
 
 class BookDetailView(DetailView):
     model = Book
     template_name = "core/product.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.object.numbers_of_entries = self.object.numbers_of_entries + 1
+        self.object.save()
+        return context
 
 
 def checkout(request):

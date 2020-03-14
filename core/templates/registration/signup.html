@@ -1,9 +1,49 @@
 {% extends 'core/base.html' %}
 {% load crispy_forms_tags %}
 
+
+
+{% block content %}
+
+        <form class="text-center border border-light p-5" autocomplete="off" method="post" novalidate style="max-width: 40%; margin: 5% auto;" data-validate-username-or-email-url="{% url 'core:validate_username_or_email' %}">
+    {% csrf_token %}
+            <p class="h4 mb-4">Sign up</p>
+     <div id="div_id_username" class="md-form">
+         <label for="id_username" class="requiredField">Username</label>
+         <input type="text" name="username" maxlength="150" class="form-control" required id="id_username">
+         <small id="hint_id_username" class="form-text teal-text float-left">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
+     </div>
+     <div id="div_id_email" class="md-form mt-5">
+         <label for="id_email" class="requiredField"> Email</label>
+         <input type="email" name="email" class="emailinput form-control" required id="id_email">
+     </div>
+            <div id="div_id_new_password1" class="md-form">
+      <input type="password" name="new_password1" class="form-control" required id="id_new_password1">
+        <label for="id_new_password1" class=" requiredField">Password</label> <br>
+
+              <ul>
+                  <li> <small class="teal-text float-left">Your password can't be too similar to your other personal information.</small></li>
+                  <li> <small class="teal-text float-left">Your password must contain at least 8 characters.</small></li>
+                  <li> <small class="teal-text float-left">Your password can't be a commonly used password.</small></li>
+                  <li> <small class="teal-text float-left">Your password can't be entirely numeric.</small></li>
+
+              </ul>
+
+      </div>
+      <div  id="div_id_new_password2" class="md-form mt-5">
+      <input type="password" name="new_password2" class="form-control" required id="id_new_password2">
+        <label for="id_new_password2" class=" requiredField">Password confirmation</label>
+          <small id="hint_id_username" class="form-text teal-text float-left">Enter the same password as before, for verification.</small><br>
+      </div>
+            <button type="submit" class="btn btn-teal">Sign up</button>
+    </form>
+
+
+{% endblock %}
 {% block javascript %}
   <script>
     $("form").change(function () {
+        console.log('sanity check');
         let form = $(this).closest("form");
         $.ajax({
         url: form.attr("data-validate-username-or-email-url"),
@@ -21,22 +61,4 @@
       });
     });
   </script>
-{% endblock %}
-
-{% block content %}
-
-<div class="row justify-content-center">
-  <div class="col-6">
-    <div class="card">
-      <div class="card-body">
-        <h2>Sing Up</h2>
-        <form method="post" autocomplete="off" data-validate-username-or-email-url="{% url 'validate_username_or_email' %}" novalidate>
-          {% csrf_token %}
-          {{ form|crispy }}
-          <button type="submit">Sign up</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}

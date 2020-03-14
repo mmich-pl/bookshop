@@ -10,7 +10,7 @@
   <title>Material Design Bootstrap</title>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'core/css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'core/css/mdb.css' %}" rel="stylesheet">
   <link href="{% static 'core/css/style.min.css' %}" rel="stylesheet">
   <style type="text/css">
     html,
@@ -61,5 +61,6 @@
 
     {% include "core/footer.html" %}
     {% include "core/scripts.html" %}
+    {% block javascript %}{% endblock %}
 </body>
 </html>

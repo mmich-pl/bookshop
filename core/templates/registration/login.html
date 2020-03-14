@@ -3,19 +3,18 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-6">
-      <div class="card">
-        <div class="card-body">
-          <h2>Log in</h2>
-          <form autocomplete="off" method="post" novalidate>
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Log in</button>
-            <a href="{% url 'password_reset' %}" class="btn btn-link">Forgot your password?</a>
-          </form>
-        </div>
+    <form class="text-center border border-light p-5" autocomplete="off" method="post" novalidate style="max-width: 30%; margin: 5% auto;">
+    {% csrf_token %}
+    <p class="h4 mb-4">Sign in</p>
+      <div class="md-form">
+        <input type="text" name="username" id="id_username" required class="form-control">
+        <label for="id_username" class="requiredField">Username</label>
       </div>
-    </div>
-  </div>
+      <div id="div_id_password" class="form-group md-form">
+        <input type="password" name="password" id="id_password" required class="form-control">
+        <label for="id_password" class="requiredField">Password</label>
+      </div>
+        <button type="submit" class="btn btn-teal">Log in</button>
+        <button  class="btn btn-teal "><a href="{% url 'password_reset' %}" class="white-text">Forgot your password?</a></button>
+    </form>
 {% endblock %}

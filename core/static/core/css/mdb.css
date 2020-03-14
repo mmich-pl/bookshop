@@ -545,7 +545,7 @@
   background-color: #009688 !important; }
 
 .teal-text {
-  color: #009688 !important; }
+  color: #00bfa5 !important; }
 
 .rgba-teal-slight,
 .rgba-teal-slight:after {
@@ -1187,10 +1187,10 @@
   background-color: #09c !important; }
 
 .success-color {
-  background-color: #00c851 !important; }
+  background-color: #00bfa5 !important; }
 
 .success-color-dark {
-  background-color: #007e33 !important; }
+  background-color: #00bfa5 !important; }
 
 .warning-color {
   background-color: #fb3 !important; }
@@ -1398,7 +1398,7 @@ button.bg-warning:focus {
   border-color: #fb3 !important; }
 
 .bg-success {
-  background-color: #00c851 !important; }
+  background-color: #00bfa5 !important; }
 
 a.bg-success:hover, a.bg-success:focus,
 button.bg-success:hover,
@@ -1406,7 +1406,7 @@ button.bg-success:focus {
   background-color: #00953c !important; }
 
 .border-success {
-  border-color: #00c851 !important; }
+  border-color: #00bfa5 !important; }
 
 .bg-info {
   background-color: #33b5e5 !important; }
@@ -1477,36 +1477,6 @@ button.bg-light:focus {
 .flex-1 {
   flex: 1; }
 
-@font-face {
-  font-family: Roboto;
-  font-weight: 200;
-  src: local(Roboto Thin), url("../font/roboto/Roboto-Thin.eot");
-  src: url("../font/roboto/Roboto-Thin.eot?#iefix") format("embedded-opentype"), url("../font/roboto/Roboto-Thin.woff2") format("woff2"), url("../font/roboto/Roboto-Thin.woff") format("woff"), url("../font/roboto/Roboto-Thin.ttf") format("truetype"); }
-
-@font-face {
-  font-family: Roboto;
-  font-weight: 300;
-  src: local(Roboto Light), url("../font/roboto/Roboto-Light.eot");
-  src: url("../font/roboto/Roboto-Light.eot?#iefix") format("embedded-opentype"), url("../font/roboto/Roboto-Light.woff2") format("woff2"), url("../font/roboto/Roboto-Light.woff") format("woff"), url("../font/roboto/Roboto-Light.ttf") format("truetype"); }
-
-@font-face {
-  font-family: Roboto;
-  font-weight: 400;
-  src: local(Roboto Regular), url("../font/roboto/Roboto-Regular.eot");
-  src: url("../font/roboto/Roboto-Regular.eot?#iefix") format("embedded-opentype"), url("../font/roboto/Roboto-Regular.woff2") format("woff2"), url("../font/roboto/Roboto-Regular.woff") format("woff"), url("../font/roboto/Roboto-Regular.ttf") format("truetype"); }
-
-@font-face {
-  font-family: Roboto;
-  font-weight: 500;
-  src: url("../font/roboto/Roboto-Medium.eot");
-  src: url("../font/roboto/Roboto-Medium.eot?#iefix") format("embedded-opentype"), url("../font/roboto/Roboto-Medium.woff2") format("woff2"), url("../font/roboto/Roboto-Medium.woff") format("woff"), url("../font/roboto/Roboto-Medium.ttf") format("truetype"); }
-
-@font-face {
-  font-family: Roboto;
-  font-weight: 700;
-  src: url("../font/roboto/Roboto-Bold.eot");
-  src: url("../font/roboto/Roboto-Bold.eot?#iefix") format("embedded-opentype"), url("../font/roboto/Roboto-Bold.woff2") format("woff2"), url("../font/roboto/Roboto-Bold.woff") format("woff"), url("../font/roboto/Roboto-Bold.ttf") format("truetype"); }
-
 body {
   font-family: "Roboto", sans-serif;
   font-weight: 300; }
@@ -1544,9 +1514,9 @@ h1, h2, h3, h4, h5, h6 {
     color: #fb3 !important; }
 
 .bq-success {
-  border-left: 3px solid #00c851 !important; }
+  border-left: 3px solid #00bfa5 !important; }
   .bq-success .bq-title {
-    color: #00c851 !important; }
+    color: #00bfa5 !important; }
 
 .bq-info {
   border-left: 3px solid #33b5e5 !important; }
@@ -1572,7 +1542,7 @@ a.text-warning:hover, a.text-warning:focus {
   color: #ffaa00 !important; }
 
 .text-success {
-  color: #00c851 !important; }
+  color: #00bfa5 !important; }
 
 a.text-success:hover, a.text-success:focus {
   color: #00953c !important; }
@@ -4127,7 +4097,7 @@ table.table a.btn.btn-warning {
 
 .btn-success {
   color: #fff;
-  background-color: #00c851 !important; }
+  background-color: #00bfa5 !important; }
   .btn-success:hover {
     color: #fff;
     background-color: #00e25b; }
@@ -4136,7 +4106,7 @@ table.table a.btn.btn-warning {
   .btn-success:focus, .btn-success:active, .btn-success.active {
     background-color: #006228; }
   .btn-success.dropdown-toggle {
-    background-color: #00c851 !important; }
+    background-color: #00bfa5 !important; }
     .btn-success.dropdown-toggle:hover, .btn-success.dropdown-toggle:focus {
       background-color: #00e25b !important; }
   .btn-success:not([disabled]):not(.disabled):active, .btn-success:not([disabled]):not(.disabled).active,
@@ -4148,9 +4118,9 @@ table.table a.btn.btn-warning {
     box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); }
 
 .success-ic {
-  color: #00c851 !important; }
+  color: #00bfa5 !important; }
   .success-ic:hover, .success-ic:focus {
-    color: #00c851; }
+    color: #00bfa5; }
 
 a.btn:not([href]):not([tabindex]),
 a.btn:not([href]):not([tabindex]):focus,
@@ -4161,17 +4131,17 @@ table.table a.btn.btn-success {
   color: #fff; }
 
 .btn-outline-success {
-  color: #00c851 !important;
+  color: #00bfa5 !important;
   background-color: transparent !important;
-  border: 2px solid #00c851 !important; }
+  border: 2px solid #00bfa5 !important; }
   .btn-outline-success:hover, .btn-outline-success:focus, .btn-outline-success:active, .btn-outline-success:active:focus, .btn-outline-success.active {
-    color: #00c851 !important;
+    color: #00bfa5 !important;
     background-color: transparent !important;
-    border-color: #00c851 !important; }
+    border-color: #00bfa5 !important; }
   .btn-outline-success:not([disabled]):not(.disabled):active, .btn-outline-success:not([disabled]):not(.disabled).active,
   .show > .btn-outline-success.dropdown-toggle {
     background-color: transparent !important;
-    border-color: #00c851 !important;
+    border-color: #00bfa5 !important;
     box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); }
   .btn-outline-success:not([disabled]):not(.disabled):active:focus, .btn-outline-success:not([disabled]):not(.disabled).active:focus,
   .show > .btn-outline-success.dropdown-toggle:focus {
@@ -4959,7 +4929,7 @@ table.table a.btn.btn-cyan {
 
 .btn-teal {
   color: #fff;
-  background-color: #00796b !important; }
+  background-color: #00bfa5 !important; }
   .btn-teal:hover {
     color: #fff;
     background-color: #009382; }
@@ -6021,7 +5991,7 @@ table.table a.btn.btn-black {
     background-color: #37474f; }
 
 .pagination.pg-dark .page-item.active .page-link {
-  background-color: #2e2e2e; }
+  background-color: #212121; }
   .pagination.pg-dark .page-item.active .page-link:hover {
     background-color: #2e2e2e; }
 
@@ -6064,7 +6034,7 @@ table.table a.btn.btn-black {
 
 .badge-success {
   color: #fff !important;
-  background-color: #00c851 !important; }
+  background-color: #00bfa5 !important; }
 
 .badge-info {
   color: #fff !important;
@@ -6245,13 +6215,13 @@ body.scrollable {
   color: #fb3; }
 
 .modal-dialog.modal-notify.modal-success .modal-header {
-  background-color: #00c851; }
+  background-color: #00bfa5; }
 
 .modal-dialog.modal-notify.modal-success .fas, .modal-dialog.modal-notify.modal-success .fab, .modal-dialog.modal-notify.modal-success .far {
-  color: #00c851; }
+  color: #00bfa5; }
 
 .modal-dialog.modal-notify.modal-success .badge {
-  background-color: #00c851; }
+  background-color: #00bfa5; }
 
 .modal-dialog.modal-notify.modal-success .btn .fas,
 .modal-dialog.modal-notify.modal-success .btn .fab,
@@ -6261,7 +6231,7 @@ body.scrollable {
 .modal-dialog.modal-notify.modal-success .btn.btn-outline-success .fas,
 .modal-dialog.modal-notify.modal-success .btn.btn-outline-success .fab,
 .modal-dialog.modal-notify.modal-success .btn.btn-outline-success .far {
-  color: #00c851; }
+  color: #00bfa5; }
 
 .modal-dialog.modal-notify.modal-info .modal-header {
   background-color: #33b5e5; }
@@ -6461,8 +6431,8 @@ body.scrollable {
     .md-form input[type="search"]:not(.browser-default):focus:not([readonly]),
     .md-form input[type="search-md"]:focus:not([readonly]),
     .md-form textarea.md-textarea:focus:not([readonly]) {
-      border-bottom: 1px solid #4285f4;
-      box-shadow: 0 1px 0 0 #4285f4; }
+      border-bottom: 1px solid #00bfa5;
+      box-shadow: 0 1px 0 0 #00bfa5; }
       .md-form input:not([type]):focus:not([readonly]) + label,
       .md-form input[type="text"]:not(.browser-default):focus:not([readonly]) + label,
       .md-form input[type="password"]:not(.browser-default):focus:not([readonly]) + label,
@@ -6477,7 +6447,7 @@ body.scrollable {
       .md-form input[type="search"]:not(.browser-default):focus:not([readonly]) + label,
       .md-form input[type="search-md"]:focus:not([readonly]) + label,
       .md-form textarea.md-textarea:focus:not([readonly]) + label {
-        color: #4285f4; }
+        color: #00bfa5; }
     .md-form input:not([type]) + label::after,
     .md-form input[type="text"]:not(.browser-default) + label::after,
     .md-form input[type="password"]:not(.browser-default) + label::after,
@@ -6525,8 +6495,8 @@ body.scrollable {
     .md-form input[type="search-md"]:focus.valid,
     .md-form textarea.md-textarea.valid,
     .md-form textarea.md-textarea:focus.valid {
-      border-bottom: 1px solid #00c851;
-      box-shadow: 0 1px 0 0 #00c851; }
+      border-bottom: 1px solid #00bfa5;
+      box-shadow: 0 1px 0 0 #00bfa5; }
     .md-form input:not([type]).valid + label:after,
     .md-form input:not([type]):focus.valid + label:after,
     .md-form input[type="text"]:not(.browser-default).valid + label:after,
@@ -6555,7 +6525,7 @@ body.scrollable {
     .md-form input[type="search-md"]:focus.valid + label:after,
     .md-form textarea.md-textarea.valid + label:after,
     .md-form textarea.md-textarea:focus.valid + label:after {
-      color: #00c851;
+      color: #00bfa5;
       content: attr(data-success);
       opacity: 1; }
     .md-form input:not([type]).invalid, .md-form input:not([type]):focus.invalid,
@@ -6801,13 +6771,13 @@ body.scrollable {
     transform: translateY(-25px);
     transform-origin: 0 0; }
   .md-form .was-validated input[type="text"]:valid + label {
-    color: #00c851 !important; }
+    color: #00bfa5 !important; }
   .md-form .was-validated input[type="text"]:invalid + label {
     color: #f44336 !important; }
   .md-form .was-validated .form-control:valid:focus {
-    box-shadow: 0 1px 0 0 #00c851 !important; }
+    box-shadow: 0 1px 0 0 #00bfa5 !important; }
   .md-form .was-validated .form-control:valid {
-    border-color: #00c851 !important; }
+    border-color: #00bfa5 !important; }
   .md-form .was-validated .form-control:invalid:focus {
     box-shadow: 0 1px 0 0 #f44336 !important; }
   .md-form .was-validated .form-control:invalid {
@@ -6824,10 +6794,10 @@ body.scrollable {
       background-color: transparent;
       border-bottom: 1px solid #bdbdbd; }
     .md-form .form-control.is-valid {
-      border-color: #00c851; }
+      border-color: #00bfa5; }
       .md-form .form-control.is-valid:focus {
-        border-color: #00c851 !important;
-        box-shadow: 0 1px 0 0 #00c851 !important; }
+        border-color: #00bfa5 !important;
+        box-shadow: 0 1px 0 0 #00bfa5 !important; }
     .md-form .form-control.is-invalid {
       border-color: #f44336; }
       .md-form .form-control.is-invalid:focus {
@@ -6982,8 +6952,8 @@ body.scrollable {
       .md-form.md-outline input[type="search"]:focus.valid,
       .md-form.md-outline textarea.md-textarea.valid,
       .md-form.md-outline textarea.md-textarea:focus.valid {
-        border-color: #00c851;
-        box-shadow: inset 0 0 0 1px #00c851; }
+        border-color: #00bfa5;
+        box-shadow: inset 0 0 0 1px #00bfa5; }
       .md-form.md-outline input[type="text"]:focus:not([readonly]).valid + label,
       .md-form.md-outline input[type="text"].valid + label:after,
       .md-form.md-outline input[type="text"]:focus.valid + label:after,
@@ -7020,7 +6990,7 @@ body.scrollable {
       .md-form.md-outline textarea.md-textarea:focus:not([readonly]).valid + label,
       .md-form.md-outline textarea.md-textarea.valid + label:after,
       .md-form.md-outline textarea.md-textarea:focus.valid + label:after {
-        color: #00c851;
+        color: #00bfa5;
         content: attr(data-success);
         opacity: 1; }
       .md-form.md-outline input[type="text"].invalid, .md-form.md-outline input[type="text"]:focus.invalid,

@@ -1,9 +1,9 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark elegant-color-dark scrolling-navbar" style="opacity: 97%;">
     <div class="container">
 
       <!-- Brand -->
       <a class="navbar-brand waves-effect" href="/">
-        <strong class="blue-text">DJe-commerce</strong>
+        <strong class="white-text">Bookshop</strong>
       </a>
 
       <!-- Collapse -->
@@ -17,7 +17,7 @@
 
         <!-- Left -->
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
+         {% comment %} <li class="nav-item active">
             <a class="nav-link waves-effect" href="/">Home
               <span class="sr-only">(current)</span>
             </a>
@@ -25,15 +25,12 @@
           <li class="nav-item">
             <a class="nav-link waves-effect" href="/checkout">
             Checkout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="/product">
-            Products</a>
-          </li>
+          </li> {% endcomment %}
         </ul>
 
         <!-- Right -->
         <ul class="navbar-nav nav-flex-icons">
+            {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link waves-effect">
               <span class="badge red z-depth-1 mr-1"> 1 </span>
@@ -41,6 +38,26 @@
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
           </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ user.username }}
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'profile' user.id %}">My profile</a>
+                <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+              </div>
+            </li>
+            {% else %}
+           <li class="nav-item">
+            <form class="form-inline my-2 my-lg-0">
+            <a href="{% url 'login' %}" class="btn btn-outline-white">Log in</a>
+            <a href="{% url 'core:signup' %}" class="btn btn-teal ml-2">Sign up</a>
+          </form>
+          </li>
+            {% endif %}
+
         </ul>
       </div>
 
