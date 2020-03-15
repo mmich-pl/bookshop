@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import reverse
+from django.utils import timezone
+from django_countries.fields import CountryField
 
 CATEGORY_CHOICES = (
     ('C', 'Chemistry'),
@@ -32,14 +34,14 @@ class Book(models.Model):
     title = models.CharField(max_length=100)
     author = models.TextField()
     publisher = models.TextField()
-    price = models.FloatField(default=0)
+    price = models.FloatField()
     discount_price = models.FloatField(default=price)
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(timezone.now())
     numbers_of_entries = models.IntegerField(default=0)
 
     def __str__(self):
@@ -85,6 +87,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -94,3 +97,15 @@ class Order(models.Model):
         for order_item in self.books.all():
             total += order_item.get_final_price()
         return total
+
+
+class BillingAddress(models.Model):
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100)
+    country = CountryField(multiple=False)
+    zip = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user.username

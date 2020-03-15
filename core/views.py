@@ -3,12 +3,12 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.views.generic import CreateView, DetailView, View
-from .forms import SignUpForm
+from .forms import SignUpForm, CheckoutForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from .models import Book, OrderBook, Order
+from .models import Book, OrderBook, Order, BillingAddress
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -21,7 +21,6 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, timedelta
-
 
 
 def create_account(self, form):
@@ -118,19 +117,57 @@ class BookDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self.object.numbers_of_entries = self.object.numbers_of_entries + 1
-        if self.object.date <= datetime.today().date() + timedelta(days=14):
-            self.object.discount_price = self.object.price - self.object.price * 0.05
-        elif self.object.date <= datetime.today().date() + timedelta(days=28):
-            self.object.discount_price = self.object.price - self.object.price * 0.10
-        else:
+        date = self.object.date
+        if datetime.today().date() <= date + timedelta(days=20):
+            self.object.discount_price = self.object.price
+        elif datetime.today().date() <= date + timedelta(days=40):
+            self.object.discount_price = self.object.price - (self.object.price * 0.10)
+        elif datetime.today().date() <= date + timedelta(days=50):
             self.object.discount_price = self.object.price - self.object.price * 0.15
+        else:
+            self.object.discount_price = self.object.price - self.object.price * 0.20
         self.object.save()
         return context
 
 
-@login_required
-def checkout(request):
-    return render(request, "core/checkout.html")
+@method_decorator(login_required, name='dispatch')
+class CheckoutView(View):
+    def get(self, *args, **kwargs):
+        form = CheckoutForm()
+        context = {
+            'form': form,
+        }
+        return render(self.request, "core/checkout.html", context)
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                street_address = form.cleaned_data.get('street_address')
+                apartment_address = form.cleaned_data.get('apartment_address')
+                country = form.cleaned_data.get('country')
+                zip = form.cleaned_data.get('zip')
+                # TODO: add functionality for these fields
+                # same_shipping_address = form.cleaned_data.get(
+                #     'same_shipping_address')
+                # save_info = form.cleaned_data.get('save_info')
+                payment_option = form.cleaned_data.get('payment_option')
+                billing_address = BillingAddress(
+                    user=self.request.user, street_address=street_address, apartment_address=apartment_address,
+                    country=country, zip=zip
+                )
+                billing_address.save()
+                order.billing_address = billing_address
+                order.save()
+                # TODO: add redirect to the selected payment option
+                return redirect('core:checkout')
+            messages.error(self.request, "Failed checkout")
+            return redirect('core:checkout')
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active order")
+            return redirect("core:order-summary")
+
 
 
 @login_required

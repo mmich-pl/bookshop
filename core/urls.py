@@ -4,7 +4,7 @@ from django.conf.urls import url
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('checkout/', views.checkout, name='checkout'),
+    path('checkout/', views.CheckoutView.as_view(), name='checkout'),
     path('product/<slug>', views.BookDetailView.as_view(), name='product'),
     path('add_to_cart/<slug>/', views.add_to_cart, name='add_to_cart'),
     path('remove_from_cart/<slug>/', views.remove_from_cart, name='remove_from_cart'),

@@ -8,6 +8,20 @@
         <form class="text-center border border-light p-5" autocomplete="off" method="post" novalidate style="max-width: 40%; margin: 5% auto;" data-validate-username-or-email-url="{% url 'core:validate_username_or_email' %}">
     {% csrf_token %}
             <p class="h4 mb-4">Sign up</p>
+            {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
      <div id="div_id_username" class="md-form">
          <label for="id_username" class="requiredField">Username</label>
          <input type="text" name="username" maxlength="150" class="form-control" required id="id_username">
