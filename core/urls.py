@@ -11,6 +11,7 @@ urlpatterns = [
     path('remove_book_from_cart/<slug>/', views.remove_single_book_from_cart,
          name='remove_single_book_from_cart'),
     path('order_summary/', views.OrderSummaryView.as_view(), name='order_summary'),
+    path('payment/<payment_option>/', views.PaymentView.as_view(), name='payment'),
     url(r'^signup/$', views.SignUpView.as_view(), name='signup'),
     url(r'^ajax/validate_username/$', views.validate_username_or_email, name='validate_username_or_email'),
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',

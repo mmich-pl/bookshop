@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from .models import Book, OrderBook, Order, BillingAddress
+from .models import Book, OrderBook, Order, BillingAddress, Payment
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -21,7 +21,10 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, timedelta
+from django.conf import settings
 
+import stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def create_account(self, form):
     user = form.save(commit=False)
@@ -134,8 +137,10 @@ class BookDetailView(DetailView):
 class CheckoutView(View):
     def get(self, *args, **kwargs):
         form = CheckoutForm()
+        order = Order.objects.get(user=self.request.user, ordered=False)
         context = {
             'form': form,
+            'order': order
         }
         return render(self.request, "core/checkout.html", context)
 
@@ -160,15 +165,85 @@ class CheckoutView(View):
                 billing_address.save()
                 order.billing_address = billing_address
                 order.save()
-                # TODO: add redirect to the selected payment option
-                return redirect('core:checkout')
-            messages.error(self.request, "Failed checkout")
-            return redirect('core:checkout')
+                if payment_option == 'S':
+                    return redirect('core:payment', payment_option='stripe')
+                elif payment_option == 'P':
+                    return redirect('core:payment', payment_option='paypal')
+                else:
+                    messages.warning(self.request, "Invalid payment option selected")
+                    return redirect('core:checkout')
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
-            return redirect("core:order-summary")
+            return redirect("core:order_summary")
 
 
+class PaymentView(View):
+    def get(self, *args, **kwargs):
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        context = {
+            'order': order
+        }
+        return render(self.request, "core/payment.html", context)
+
+    def post(self, *args, **kwargs):
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        token = self.request.POST.get('stripeToken')
+        amount = int(order.get_total() * 100)
+
+        try:
+            charge = stripe.Charge.create(
+                amount=amount,  # cents
+                currency="pln",
+                source=token
+            )
+
+            # create the payment
+            payment = Payment()
+            payment.stripe_charge_id = charge['id']
+            payment.user = self.request.user
+            payment.amount = order.get_total()
+            payment.save()
+
+            # assign the payment to the order
+
+            order.ordered = True
+            order.payment = payment
+            order.save()
+            print("success")
+            messages.success(self.request, "Your order was successful!")
+            return redirect("core:home")
+
+        except stripe.error.CardError as e:
+            body = e.json_body
+            err = body.get('error', {})
+            messages.error(self.request, f"{err.get('message')}")
+            return redirect("core:home")
+
+        except stripe.error.RateLimitError as e:
+            messages.error(self.request, "Rate limit error")
+            return redirect("core:home")
+
+        except stripe.error.InvalidRequestError as e:
+            messages.error(self.request, "Invalid parameters")
+            return redirect("core:home")
+
+        except stripe.error.AuthenticationError as e:
+            messages.error(self.request, "Not authenticated")
+            return redirect("core:home")
+
+        except stripe.error.APIConnectionError as e:
+            messages.error(self.request, "Network error")
+            return redirect("core:home")
+
+        except stripe.error.StripeError as e:
+            messages.error(
+                self.request, "Something went wrong. You were not charged. Please try again.")
+            return redirect("core:home")
+
+        except Exception as e:
+            messages.error(
+                self.request, "A serious error occurred. We have been notifed.")
+            return redirect("core:home")
 
 @login_required
 def add_to_cart(request, slug):
@@ -250,5 +325,5 @@ class OrderSummaryView(View):
             }
             return render(self.request, 'core/order_summary.html', context)
         except ObjectDoesNotExist:
-            messages.error(self.request, "You do not have an active orders!")
-            return redirect("/")
+            messages.warning(self.request, "You do not have an active orders!")
+            return redirect("core:home")

@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
 ]
 
+STRIPE_SECRET_KEY = 'sk_test_GPVpSwlWiGCKk7KvkQXywbiN00A4wgGZ1b'
+STRIPE_PUBLIC_KEY = 'pk_test_aQM4geufchpq7SrhV9CZBxtj00qHWMhGAV'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
