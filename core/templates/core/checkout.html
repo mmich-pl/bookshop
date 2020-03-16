@@ -62,25 +62,7 @@
         </div>
 
         <div class="col-md-4 mb-4">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">{{ order.books.count }}</span>
-          </h4>
-           <ul class="list-group mb-3  z-depth-1">
-            {% for order_book in order.books.all %}
-            <li class="p-3 list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">{{ order_book.quantity }} x {{ order_book.book.title}}</h6>
-                <small class="text-muted">{{ order_book.book.description}}</small>
-              </div>
-              <span class="text-muted">{{ order_book.get_final_price }}PLN</span>
-            </li>
-            {% endfor %}
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Total (PLN)</span>
-              <strong>${{ order.get_total }}</strong>
-            </li>
-          </ul>
+        {% include 'core/summary.html' %}
         </div>
       </div>
     </div>

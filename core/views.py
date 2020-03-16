@@ -197,6 +197,11 @@ class PaymentView(View):
                 source=token
             )
 
+            order_books = order.books.all()
+            order_books.update(ordered=True)
+            for book in order_books:
+                book.save()
+
             # create the payment
             payment = Payment()
             payment.stripe_charge_id = charge['id']
@@ -209,7 +214,6 @@ class PaymentView(View):
             order.ordered = True
             order.payment = payment
             order.save()
-            print("success")
             messages.success(self.request, "Your order was successful!")
             return redirect("core:home")
 
@@ -278,7 +282,6 @@ def remove_from_cart(request, slug):
         order = order_qs[0]
         if order.books.filter(book__slug=book.slug).exists():
             order_book = OrderBook.objects.filter(book=book, user=request.user, ordered=False)[0]
-            print(order_book)
             order_book.quantity = 0
             order.books.remove(order_book)
             order_book.delete()

@@ -3,6 +3,10 @@ from django.db import models
 from django.shortcuts import reverse
 from django.utils import timezone
 from django_countries.fields import CountryField
+from PIL import Image
+from random import choice
+from os.path import join as path_join, isfile
+import os
 
 CATEGORY_CHOICES = (
     ('C', 'Chemistry'),
@@ -30,6 +34,13 @@ CONDITION_CHOICES = (
 )
 
 
+def random_img():
+    dir_path = 'media/default_book_image'
+    return_path = 'default_book_image'
+    files = [content for content in os.listdir(dir_path) if isfile(path_join(dir_path, content))]
+    return path_join(return_path, choice(files))
+
+
 class Book(models.Model):
     title = models.CharField(max_length=100)
     author = models.TextField()
@@ -43,9 +54,20 @@ class Book(models.Model):
     description = models.TextField()
     date = models.DateField(timezone.now())
     numbers_of_entries = models.IntegerField(default=0)
+    image = models.ImageField(default=random_img, upload_to='books_img')
 
     def __str__(self):
         return self.title
+
+    def save(self, **kwargs):
+        super().save()
+
+        img = Image.open(self.image.path)
+
+        if img.height > 450 or img.width > 450:
+            output_size = (450, 450)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
     def get_absolute_url(self):
         return reverse("core:product", kwargs={'slug': self.slug})
