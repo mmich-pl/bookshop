@@ -13,40 +13,95 @@
             {{ form.errors }}
             {{ form.non_field_errors }}
 
+            <h3>Shipping Address</h3>
+                <div class="hideable_shipping_form">
               <div class="md-form mb-5">
-                <input type="text" name="street_address" required id="address" class="form-control">
-                <label for="address" class="">Street Address</label>
+                <input type="text" name="shipping_street_address" id="shipping_street_address" class="form-control">
+                <label for="shipping_street_address" class="">Street Address</label>
               </div>
               <div class="md-form mb-5">
-                <input type="text" name="apartment_address" required id="address-2" class="form-control">
-                <label for="address-2" class="">Apartment Address </label>
+                <input type="text" name="shipping_apartment_address" id="shipping_apartment_address" class="form-control">
+                <label for="shipping_apartment_address" class="">Apartment Address </label>
               </div>
               <div class="row">
                 <div class=" col-lg-4 col-md-12 mb-4">
                   <label for="country">Country</label>
-                  {{ form.country }}
+                  {{ form.shipping_country }}
                   <div class="invalid-feedback">
                     Please select a valid country.
                   </div>
                 </div>
                 <div class="md-form col-lg-4 col-md-6 mb-4 ml-5">
-                  <label for="zip" class="ml-3">Zip</label>
-                  <input type="text" name="zip" id="zip" class="form-control" required>
+                  <label for="shipping_zip" class="ml-3"> Code</label>
+                  <input type="text" name="shipping_zip" id="shipping_zip" class="form-control">
+                  <div class="invalid-feedback">
+                    Zip code required.
+                  </div>
+                </div>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="same_billing_address" id="same_billing_address">
+                <label class="custom-control-label" for="same_billing_address">Billing address is the same as my shipping address</label>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping">
+                <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
+              </div>
+                </div>
+                {% if default_shipping_address %}
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
+                <label class="custom-control-label" for="use_default_shipping">Use default shipping address:{{ default_shipping_address.street_address|truncatechars:10 }}</label>
+              </div>
+              {% endif %}
+
+              <hr>
+
+                <h3>Billing Address</h3>
+                <div class="hideable_billing_form">
+                <div class="md-form mb-5">
+                <input type="text" name="billing_street_address" id="billing_street_address" class="form-control">
+                <label for="billing_street_address" class="">Street Address</label>
+              </div>
+              <div class="md-form mb-5">
+                <input type="text" name="billing_apartment_address" id="billing_apartment_address" class="form-control">
+                <label for="billing_apartment_address" class="">Apartment Address </label>
+              </div>
+              <div class="row">
+                <div class=" col-lg-4 col-md-12 mb-4">
+                  <label for="country">Country</label>
+                  {{ form.billing_country }}
+                  <div class="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+                </div>
+                <div class="md-form col-lg-4 col-md-6 mb-4 ml-5">
+                  <label for="billing_zip" class="ml-3"> Code</label>
+                  <input type="text" name="billing_zip" id="billing_zip" class="form-control">
                   <div class="invalid-feedback">
                     Zip code required.
                   </div>
                 </div>
               </div>
               <hr>
+
               <div class="custom-control custom-checkbox">
-                <input {% if form.same_shipping_address.value %}checked{% endif %} type="checkbox" class="custom-control-input" name="same_billing_address" id="same-address">
-                <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+                <input type="checkbox" class="custom-control-input" name="set_default_billing" id="set_default_billing">
+                <label class="custom-control-label" for="set_default_billing">Save as default billing address</label>
               </div>
-              <div class="custom-control custom-checkbox">
-                <input {% if form.save_info.value %}checked{% endif %} type="checkbox" class="custom-control-input" name="save_info" id="save-info">
-                <label class="custom-control-label" for="save-info">Save this information for next time</label>
+                </div>
+                {% if default_billing_address %}
+                <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="use_default_billing" id="use_default_billing">
+                <label class="custom-control-label" for="use_default_billing">Use default billing address: {{ default_billing_address.street_address|truncatechars:10 }}</label>
               </div>
+              {% endif %}
+
+
               <hr>
+
+            <h3>Payment Option</h3>
+
               <div class="d-block my-3">
                 {% for value, name in form.fields.payment_option.choices %}
                 <div class="custom-control custom-radio">
@@ -70,3 +125,25 @@
 
 {% endblock content %}
 
+{% block javascript %}
+    <script>
+
+    $(document).ready(function() {
+        let use_default_shipping = document.querySelector("input[name=use_default_shipping]");
+        let use_default_billing = document.querySelector("input[name=use_default_billing]");
+        let hideable_shipping_form = $('.hideable_shipping_form');
+        let hideable_billing_form = $('.hideable_billing_form');
+
+        $(use_default_shipping).change(function () {
+            hideable_shipping_form.slideToggle();
+        });
+
+        $(use_default_billing).change(function () {
+            hideable_billing_form.slideToggle();
+        })
+
+    });
+
+</script>
+
+{% endblock %}

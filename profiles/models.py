@@ -10,6 +10,8 @@ class Profile(models.Model):
     birthdate = models.DateField(null=True, blank=True)
     picture = models.ImageField(default='default.jpg', upload_to='profile_pics')
     email = models.EmailField(max_length=100, null=True)
+    stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
+    one_click_purchasing = models.BooleanField(default=False)
 
     def __str__(self):
         if self.first_name and not self.last_name:

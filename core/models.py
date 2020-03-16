@@ -25,6 +25,11 @@ LABEL_CHOICES = (
     ('D', 'danger'),
 )
 
+ADDRESS_CHOICES = (
+    ('B', 'Billing'),
+    ('S', 'Shipping'),
+)
+
 CONDITION_CHOICES = (
     ('VG', 'Very Good'),
     ('G', 'Good'),
@@ -43,8 +48,8 @@ def random_img():
 
 class Book(models.Model):
     title = models.CharField(max_length=100)
-    author = models.TextField()
-    publisher = models.TextField()
+    author = models.CharField(max_length=300)
+    publisher = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(default=price)
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2)
@@ -57,7 +62,7 @@ class Book(models.Model):
     image = models.ImageField(default=random_img, upload_to='books_img')
 
     def __str__(self):
-        return self.title
+        return self.title or ''
 
     def save(self, **kwargs):
         super().save()
@@ -109,11 +114,14 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
-    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
+    billing_address = models.ForeignKey('Address', related_name='billing_address',
+                                        on_delete=models.SET_NULL, blank=True, null=True)
+    shipping_address = models.ForeignKey('Address', related_name='shipping_address',
+                                         on_delete=models.SET_NULL, blank=True, null=True)
     payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.user.username
+        return str(self.user) or ''
 
     def get_total(self):
         total = 0
@@ -122,16 +130,20 @@ class Order(models.Model):
         return total
 
 
-class BillingAddress(models.Model):
-    user = models.ForeignKey(User,
-                             on_delete=models.CASCADE)
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
-    apartment_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=10)
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    default = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user}, street: {self.street_address}"
+
+    class Meta:
+        verbose_name_plural = 'Addresses'
 
 
 class Payment(models.Model):
@@ -141,4 +153,4 @@ class Payment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username
+        return str(self.user) or ''

@@ -1,12 +1,20 @@
-##Django-bookshop
+## Django-bookshop
 This application is a simple project created as a project at school.
 
 This is a store with used manuals where logged in users can buy or sell them
 
-###The application includes:
+### The application includes:
 * complete user profile support
 * system which check if the given login or e-mail address is used by other user
 * email address verification system
+* cart system
+* fully working payment system (stripe)
+
+###### TODO:
+* seller views
+* payment in real
+* system which split offers from the different sellers
+* different 'bank' account
 
 ## Running the Project Locally
 
