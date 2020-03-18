@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- Create book button -->
+<button class="create-book btn btn-primary" type="button" name="button">Create book</button>
+
+    <div class="table-responsive text-nowrap">
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+{% for book in books %}
+    <tr>
+    <th scope="row">{{ forloop.counter }}</th>
+    <td>{{ book.title }}</td>
+    <td>
+          <!-- Update book buttons -->
+      <button type="button" class="update-book btn btn-sm btn-primary" data-id="{% url 'update_book' book.pk %}">
+        <span class="fas fa-pen"></span>
+      </button>
+      <!-- Delete book buttons -->
+      <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'delete_book' book.pk %}">
+        <span class="fa fa-trash"></span>
+      </button>
+    </td>
+    </tr>
+{% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript">
+  $(function () {
+    // Create book button
+    $(".create-book").modalForm({formURL: "{% url 'create_book' %}"});
+
+    // Update book buttons
+    $(".update-book").each(function () {
+      $(this).modalForm({formURL: $(this).data('id')});
+    });
+
+    // Delete book buttons
+    $(".delete-book").each(function () {
+      $(this).modalForm({formURL: $(this).data('id')});
+    });
+
+  });
+</script>
+
+{% endblock %}

@@ -69,8 +69,9 @@
                 </a>
                 <h5>
                   <strong>
+                      <input type="date" class="date" hidden data-book="{{ book.slug }}" value="{{ book.date|date:"Y-m-d" }}">
                     <a href="{{ book.get_absolute_url }}" class="dark-grey-text">{{ book.title }}
-                      <span class="badge badge-pill {{ book.get_label_display }}-color-dark">NEW</span>
+                      <span class="label badge badge-pill badge-success d-none" id="{{ book.slug }}">NEW</span>
                     </a>
                   </strong>
                 </h5>
@@ -137,6 +138,23 @@
   </main>
     {% block javascript %}
         <script>
+
+        jQuery($ => {
+          let today = new Date();
+          $(".date").each(function() {
+            let get_date = $(this).val();
+            let slug = $(this).data('book');
+            console.log(slug);
+            let date = new Date(get_date);
+            date.setDate(date.getDate() + 7);
+            if ((new Date(today).getTime() <= new Date(date).getTime())) {
+
+                    $('#' + slug).removeClass('d-none');
+                console.log('ready!')
+            }
+          });
+        });
+
            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -151,6 +169,19 @@
                     });
                 });
             });
+
+
+
+           {#function compare()#}
+           {# {#}
+           {#     var startDt = document.getElementById("startDate").value;#}
+           {#     var endDt = document.getElementById("endDate").value;#}
+           {##}
+           {#     if( (new Date(startDt).getTime() < new Date(endDt).getTime()))#}
+           {#     {#}
+           {#         // Your code here#}
+           {#     }#}
+           {# }#}
         </script>
     {% endblock %}
 {% endblock content %}

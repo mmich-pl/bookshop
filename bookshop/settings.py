@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'django_countries',
+    'bootstrap_modal_forms',
+    'widget_tweaks',
     'core.apps.CoreConfig',
+    'books.apps.BooksConfig',
     'profiles.apps.ProfilesConfig',
 ]
 

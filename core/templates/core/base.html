@@ -36,6 +36,11 @@
 {% include "core/navbar.html" %}
 
 <body>
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
 <div class="container mt-5 pt-4">
   {% if messages %}
         {% for message in messages %}

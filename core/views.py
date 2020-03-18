@@ -307,30 +307,17 @@ class PaymentView(View):
             amount = int(order.get_total() * 100)
 
             try:
-
                 if use_default or save:
-                    # charge the customer because we cannot charge the token more than once
-                    charge = stripe.Charge.create(
-                        amount=amount,  # cents
-                        currency="usd",
-                        customer=user_profile.stripe_customer_id
-                    )
+                    charge = stripe.Charge.create(amount=amount, currency="pln",
+                                                  customer=user_profile.stripe_customer_id)
                 else:
-                    # charge once off on the token
-                    charge = stripe.Charge.create(
-                        amount=amount,  # cents
-                        currency="usd",
-                        source=token
-                    )
+                    charge = stripe.Charge.create(amount=amount,  currency="pln", source=token)
 
-                # create the payment
                 payment = Payment()
                 payment.stripe_charge_id = charge['id']
                 payment.user = self.request.user
                 payment.amount = order.get_total()
                 payment.save()
-
-                # assign the payment to the order
 
                 order_books = order.books.all()
                 order_books.update(ordered=True)
