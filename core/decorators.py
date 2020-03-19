@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse
-
+from books.models import Book
 
 def anonymous_required(function=None, redirect_url=None):
     '''
@@ -21,14 +21,3 @@ def anonymous_required(function=None, redirect_url=None):
     if function:
         return actual_decorator(function)
     return actual_decorator
-
-
-# TODO: rewrite decorator
-def anonymous(function):
-    def _function(request, *args, **kwargs):
-        if not request.user.is_anonymous:
-            messages.info(request, 'Access restricted, for teachers only')
-            return HttpResponseRedirect(reverse('login'))
-        return function(request, *args, **kwargs)
-
-    return _function

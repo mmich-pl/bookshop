@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_countries',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'django_cleanup.apps.CleanupConfig',
     'core.apps.CoreConfig',
     'books.apps.BooksConfig',
     'profiles.apps.ProfilesConfig',

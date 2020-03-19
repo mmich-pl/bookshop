@@ -4,59 +4,82 @@
 
   <main class="mt-5 pt-4">
     <div class="container dark-grey-text mt-5">
-
-      <!--Grid row-->
       <div class="row wow fadeIn">
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-
-          <img  src="{{ object.image.url }}"  class="img-fluid">
-
+        <div class="col-6 mb-4">
+          <img  src="{{ object.image.url }}" style="min-height: 100%;">
         </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-
-          <!--Content-->
+        <div class="col-6 mb-4">
           <div class="p-4">
-
             <div class="mb-3">
-              <a href="">
                 <span class="badge purple mr-1">{{ object.get_category_display }}</span>
-              </a>
             </div>
+            <h4 class="lead font-weight-bold">{{ object.title }}</h4><br>
+              <p class="lead font-weight-bold">Description:</p>
+                        <p>{{ object.description }}</p>
+          <ul class="list-group list-group-flush mb-5">
+                            <li class="list-group-item">
 
-            <p class="lead">
+          <div class="row">
+              <div class="col-5">
+              <p><span>Price:</span>
+              <span class="ml-1">
             {% if object.discount_price < object.price %}
                 <span class="mr-1"><del>{{ object.price }}</del></span>
                  <span>{{ object.discount_price }}PLN</span>
             {% else %}
               <span>{{ object.price }}PLN</span>
               {% endif %}
-            </p>
+            </span></p>
+              </div>
+              <div class="col-7">
+                  <p><span>Author(s): </span><span class="ml-1">{{ object.author }}</span></p>
+              </div>
+          </div>
+                    </li>
+              <li class="list-group-item">
 
-            <p class="lead font-weight-bold">Description</p>
+          <div class="row">
+              <div class="col-5">
+              <p><span>Condition:</span>
+              <span class="ml-1" id="amount">
+              {{ object.get_condition_display }}
+            </span></p>
+              </div>
+              <div class="col-7">
+              <p><span>Publisher:</span>
+              <span class="ml-1">
+           {{ object.publisher }}
+            </span></p>
+              </div>
 
-            <p>{{ object.description }}</p>
+          </div>
+                    </li>
+              <li class="list-group-item">
 
-            {% comment %} <form class="d-flex justify-content-left">
-              <!-- Default input -->
-              <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
-              <button class="btn btn-primary btn-md my-0 p" type="submit">
-                Add to cart
-                <i class="fas fa-shopping-cart ml-1"></i>
-              </button>
+          <div class="row">
+              <div class="col-5">
+              <p><span>Amount:</span>
+              <span class="ml-1" id="amount">
+              {{ amount }}
+            </span></p>
+              </div>
+              <div class="col-7">
+                  <p><span>Seller: </span><span class="ml-1">{{ object.seller.profile.first_name|default_if_none:object.seller }}
+                                                                {{ object.seller.profile.last_name|default_if_none:"" }}
+                  </span></p>
+              </div>
 
-            </form> {% endcomment %}
-            <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p">
+          </div>
+                    </li>
+
+
+        </ul>
+
+                <a id="add_to_cart" href="{{ object.get_add_to_cart_url }}" class="btn btn-teal btn-md my-0 p">
               Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
-            <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
-              Remove from cart
-            </a>
+
 
           </div>
           <!--Content-->
@@ -88,32 +111,24 @@
       <!--Grid row-->
 
       <!--Grid row-->
-      <div class="row wow fadeIn">
+      <div class="row wow fadeIn mt-4">
+        {% for book in more_books %}
 
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-12 mb-4">
 
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt="">
-
+        <div class="col-2">
+            <a href="{{ book.get_absolute_url }}"><img src="{{ book.image.url }}" class="img-fluid"></a>
         </div>
-        <!--Grid column-->
 
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-6 mb-4">
-
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="">
-
+        <div class="col-4">
+            <span class="badge purple mr-1">{{ book.get_category_display }}</span>
+            <ul style="text-decoration: none;">
+                <li>Title: {{ book.title }}</li>
+                <li>Price: {{ book.price }} PLN</li>
+                <li>Seller: {{ object.seller.profile.first_name|default_if_none:object.seller }}
+                            {{ object.seller.profile.last_name|default_if_none:"" }}</li>
+            </ul>
         </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-6 mb-4">
-
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="">
-
-        </div>
-        <!--Grid column-->
-
+    {% endfor %}
       </div>
       <!--Grid row-->
 
@@ -121,3 +136,23 @@
   </main>
 
 {% endblock content %}
+
+{% block javascript %}
+<script>
+
+        jQuery($ => {
+        let value = $("#amount").html();
+        value = parseInt(value);
+            if( value === 0){
+                console.log("sanity check");
+                $("#add_to_cart").addClass("disabled");
+            } else {
+                $("#add_to_cart").removeClass("disabled");
+            }
+        });
+
+
+
+</script>
+
+{% endblock %}

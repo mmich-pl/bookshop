@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <!-- Create book button -->
-<button class="create-book btn btn-primary" type="button" name="button">Create book</button>
+<button class="create-book btn btn-teal" type="button" name="button">Create book</button>
 
     <div class="table-responsive text-nowrap">
 
@@ -22,11 +22,11 @@
     <td>{{ book.title }}</td>
     <td>
           <!-- Update book buttons -->
-      <button type="button" class="update-book btn btn-sm btn-primary" data-id="{% url 'update_book' book.pk %}">
+      <button type="button" class="update-book btn btn-sm btn-teal" data-id="{% url 'update_book' book.slug %}">
         <span class="fas fa-pen"></span>
       </button>
       <!-- Delete book buttons -->
-      <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'delete_book' book.pk %}">
+      <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'delete_book' book.slug %}">
         <span class="fa fa-trash"></span>
       </button>
     </td>

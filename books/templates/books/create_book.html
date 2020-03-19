@@ -1,6 +1,28 @@
 {% load widget_tweaks %}
 
-<form method="post" action="">
+<style>
+ div.Category, div.Description {
+     margin: 50px 0;
+ }
+
+ div.Price {
+     margin-top: -5px;
+ }
+
+label.Category, label.Condition, label.Description, label.Image {
+    margin-top: -40px;
+}
+
+
+    label.Image {
+        line-height: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+</style>
+
+<form method="post" action="" enctype="multipart/form-data">
   {% csrf_token %}
 
   <div class="modal-header">
@@ -19,8 +41,8 @@
     </div>
 
     {% for field in form %}
-      <div class="md-form">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      <div class="md-form {{ field.label }}">
+        <label class="{{ field.label }}" for="{{ field.id_for_label }}">{{ field.label }}</label>
         {% render_field field class="form-control" %}
         <div class="{% if field.errors %} invalid{% endif %}">
           {% for error in field.errors %}
@@ -32,7 +54,12 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="submit-btn btn btn-primary">Create</button>
+    <button type="button" class="submit-btn btn btn-teal">Create</button>
   </div>
 
 </form>
+
+<script>
+    $("#id_image").removeClass("form-control");
+    $('label.Amount').addClass("active");
+</script>

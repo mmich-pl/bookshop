@@ -9,14 +9,14 @@ import os
 
 
 CATEGORY_CHOICES = (
-    ('C', 'Chemistry'),
-    ('B', 'Biology'),
-    ('E', 'English'),
-    ('G', 'Geography'),
-    ('M', 'Math'),
-    ('O', 'Other'),
-    ('P', 'Polish'),
-    ('Ph', 'Physic'),
+    ('Chemistry', 'Chemistry'),
+    ('Biology', 'Biology'),
+    ('English', 'English'),
+    ('Geography', 'Geography'),
+    ('Math', 'Math'),
+    ('Other', 'Other'),
+    ('Polish', 'Polish'),
+    ('Physic', 'Physic'),
 )
 
 CONDITION_CHOICES = (
@@ -35,6 +35,12 @@ def random_img():
     return path_join(return_path, choice(files))
 
 
+def content_file_name(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.slug, ext)
+    return os.path.join('books_img', filename)
+
+
 class Book(models.Model):
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=300)
@@ -42,12 +48,13 @@ class Book(models.Model):
     price = models.FloatField()
     discount_price = models.FloatField(null=True, blank=True)
     condition = models.CharField(choices=CONDITION_CHOICES, max_length=2)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
     slug = models.SlugField()
     description = models.TextField()
     date = models.DateField(default=timezone.now)
     numbers_of_entries = models.IntegerField(default=0)
-    image = models.ImageField(default=random_img, upload_to='books_img')
+    image = models.ImageField(default=random_img, upload_to=content_file_name)
+    amount = models.PositiveSmallIntegerField(default=1)
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

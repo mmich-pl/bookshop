@@ -1,6 +1,27 @@
 {% load widget_tweaks %}
 
-<form method="post" action="">
+<style>
+ div.Category, div.Description {
+     margin: 50px 0;
+ }
+
+
+
+label.Category, label.Condition, label.Description, label.Image {
+    margin-top: -40px;
+}
+
+
+    label.Image {
+        line-height: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+
+</style>
+
+<form method="post" action="" enctype="multipart/form-data">
   {% csrf_token %}
 
   <div class="modal-header">
@@ -18,10 +39,10 @@
       {% endfor %}
     </div>
 
-    {% for field in form %}
-      <div class="form-group">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {% render_field field class="form-control" placeholder=field.label %}
+{% for field in form %}
+      <div class="md-form {{ field.label }}">
+        <label class="{{ field.label }}" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% render_field field class="form-control" %}
         <div class="{% if field.errors %} invalid{% endif %}">
           {% for error in field.errors %}
             <p class="help-block">{{ error }}</p>
@@ -32,7 +53,20 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="submit-btn btn btn-primary">Update</button>
+    <button type="button" class="submit-btn btn btn-teal">Update</button>
   </div>
 
 </form>
+
+<script>
+    $( document ).ready(function() {
+        $("#id_image").removeClass("form-control");
+        let labels = ['Title', 'Author', 'Publisher', 'Price', 'Amount', ];
+    for (let i=0; i < labels.length; i++) {
+        console.log("'label."+labels[i]+"'");
+        let cur_label = "label." + labels[i];
+        $(cur_label).addClass("active");
+    }
+});
+
+</script>

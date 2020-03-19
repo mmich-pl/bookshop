@@ -29,20 +29,20 @@
         </button>
         <div class="collapse navbar-collapse" id="basicExampleNav">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">All
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Shirts</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Sport wears</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Outwears</a>
-            </li>
+          {% for category in categories%}
+              <li class="nav-item active">
+                  <form method="get">
+                        <button type="submit" name="q" value="{{ category.category }}"
+                                class="btn d-flex justify-content-start nav-link" style="text-transform: uppercase;">
+                            <span class="d-flex justify-content-start" style="width: 50%;">
+                               {{ category.category }}</span>
+                            <span class="d-flex justify-content-end ml-2" style="width: 50%;">
+                                 ({{ category.category__count }})
+                            </span>
+                        </button>
+                  </form>
+                </li>
+          {% endfor %}
           </ul>
           <form method="GET" class="form-inline">
             <div class="md-form my-0">

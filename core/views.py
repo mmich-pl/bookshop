@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from .decorators import anonymous_required
 from django.utils.decorators import method_decorator
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, timedelta
@@ -110,8 +110,9 @@ def home(request):
 
     context = {
         'books': books,
-        'latest': Book.objects.order_by('-date_posted')[:4],
+        'categories': Book.objects.all().values('category').annotate(Count('category')).order_by('category'),
     }
+
     return render(request, "core/home.html", context)
 
 
@@ -132,6 +133,14 @@ class BookDetailView(DetailView):
         else:
             self.object.discount_price = self.object.price - self.object.price * 0.20
         self.object.save()
+
+        more_books = Book.objects.filter(title=self.object.title)
+        context['amount'] = int(self.object.amount)
+        if more_books.count() > 1:
+            context['more_books'] = more_books.difference(Book.objects.filter(pk=self.object.pk))
+        else:
+            context['more_books'] = None
+
         return context
 
 
@@ -371,11 +380,15 @@ def add_to_cart(request, slug):
     if order_qs.exists():
         order = order_qs[0]
         if order.books.filter(book__slug=book.slug).exists():
+            book.amount -= 1
+            book.save()
             order_book.quantity += 1
             order_book.save()
             messages.info(request, "This book quantity was updated.")
             return redirect("core:order_summary")
         else:
+            book.amount -= 1
+            book.save()
             order.books.add(order_book)
             messages.info(request, "This book was added to your cart.")
             return redirect("core:product", slug=slug)
@@ -396,6 +409,11 @@ def remove_from_cart(request, slug):
         order = order_qs[0]
         if order.books.filter(book__slug=book.slug).exists():
             order_book = OrderBook.objects.filter(book=book, user=request.user, ordered=False)[0]
+            if order_book.quantity >= 1:
+                book.amount += order_book.quantity
+            else:
+                book.amount += 1
+            book.save()
             order_book.quantity = 0
             order.books.remove(order_book)
             order_book.delete()
@@ -420,8 +438,10 @@ def remove_single_book_from_cart(request, slug):
             if order_book.quantity > 1:
                 order_book.quantity -= 1
                 order_book.save()
+                book.amount += 1
+                book.save()
             else:
-                order.books.remove(order_book)
+                remove_from_cart(request, slug)
             messages.info(request, "This book quantity was updated.")
             return redirect("core:order_summary")
         else:
