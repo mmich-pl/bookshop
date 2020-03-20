@@ -59,7 +59,7 @@
           <div class="row">
               <div class="col-5">
               <p><span>Amount:</span>
-              <span class="ml-1" id="amount">
+              <span class="ml-1" >
               {{ amount }}
             </span></p>
               </div>
@@ -68,34 +68,18 @@
                                                                 {{ object.seller.profile.last_name|default_if_none:"" }}
                   </span></p>
               </div>
-
           </div>
                     </li>
-
-
         </ul>
-
                 <a id="add_to_cart" href="{{ object.get_add_to_cart_url }}" class="btn btn-teal btn-md my-0 p">
               Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
-
-
           </div>
-          <!--Content-->
-
         </div>
-        <!--Grid column-->
-
       </div>
-      <!--Grid row-->
-
       <hr>
-
-      <!--Grid row-->
       <div class="row d-flex justify-content-center wow fadeIn">
-
-        <!--Grid column-->
         <div class="col-md-6 text-center">
 
           <h4 class="my-4 h4">Additional information</h4>
@@ -105,15 +89,9 @@
             quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
 
         </div>
-        <!--Grid column-->
-
       </div>
-      <!--Grid row-->
-
-      <!--Grid row-->
       <div class="row wow fadeIn mt-4">
         {% for book in more_books %}
-
 
         <div class="col-2">
             <a href="{{ book.get_absolute_url }}"><img src="{{ book.image.url }}" class="img-fluid"></a>
@@ -130,8 +108,6 @@
         </div>
     {% endfor %}
       </div>
-      <!--Grid row-->
-
     </div>
   </main>
 
@@ -139,20 +115,13 @@
 
 {% block javascript %}
 <script>
-
-        jQuery($ => {
-        let value = $("#amount").html();
-        value = parseInt(value);
+        $(document).ready(function () {
+        let value = {{ amount_json|safe }};
             if( value === 0){
-                console.log("sanity check");
                 $("#add_to_cart").addClass("disabled");
             } else {
                 $("#add_to_cart").removeClass("disabled");
             }
         });
-
-
-
 </script>
-
 {% endblock %}

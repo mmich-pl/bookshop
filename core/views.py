@@ -23,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, timedelta
 from django.conf import settings
+import json
 
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -136,6 +137,7 @@ class BookDetailView(DetailView):
 
         more_books = Book.objects.filter(title=self.object.title)
         context['amount'] = int(self.object.amount)
+        context['amount_json'] = json.dumps(int(self.object.amount))
         if more_books.count() > 1:
             context['more_books'] = more_books.difference(Book.objects.filter(pk=self.object.pk))
         else:
@@ -144,12 +146,107 @@ class BookDetailView(DetailView):
         return context
 
 
+@login_required
+def add_to_cart(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+    order_book, created = OrderBook.objects.get_or_create(book=book, user=request.user, ordered=False)
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.books.filter(book__slug=book.slug).exists():
+            book.amount -= 1
+            book.save()
+            order_book.quantity += 1
+            order_book.save()
+            messages.info(request, "This book quantity was updated.")
+            return redirect("core:order_summary")
+        else:
+            book.amount -= 1
+            book.save()
+            order.books.add(order_book)
+            messages.info(request, "This book was added to your cart.")
+            return redirect("core:product", slug=slug)
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date)
+        order.books.add(order_book)
+        messages.info(request, "This book was added to your cart.")
+        return redirect("core:product", slug=slug)
+
+
+@login_required
+def remove_from_cart(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.books.filter(book__slug=book.slug).exists():
+            order_book = OrderBook.objects.filter(book=book, user=request.user, ordered=False)[0]
+            if order_book.quantity >= 1:
+                book.amount += order_book.quantity
+            else:
+                book.amount += 1
+            book.save()
+            order_book.quantity = 0
+            order.books.remove(order_book)
+            order_book.delete()
+            messages.info(request, "This book was removed from your cart.")
+            return redirect("core:order_summary")
+        else:
+            messages.info(request, "This book was not in your cart")
+            return redirect("core:product", slug=slug)
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("core:product", slug=slug)
+
+
+@login_required
+def remove_single_book_from_cart(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.books.filter(book__slug=book.slug).exists():
+            order_book = OrderBook.objects.filter(book=book, user=request.user, ordered=False)[0]
+            if order_book.quantity > 1:
+                order_book.quantity -= 1
+                order_book.save()
+                book.amount += 1
+                book.save()
+            else:
+                remove_from_cart(request, slug)
+            messages.info(request, "This book quantity was updated.")
+            return redirect("core:order_summary")
+        else:
+            messages.info(request, "This book was not in your cart")
+            return redirect("core:product", slug=slug)
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("core:product", slug=slug)
+
+
 def is_valid_form(values):
     valid = True
     for field in values:
         if field == '':
             valid = False
     return valid
+
+
+@method_decorator(login_required, name='dispatch')
+class OrderSummaryView(View):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            print(order.books.all())
+            context = {
+                'object': order,
+            }
+            return render(self.request, 'core/order_summary.html', context)
+        except ObjectDoesNotExist:
+            messages.warning(self.request, "You do not have an active orders!")
+            return redirect("core:home")
 
 
 @method_decorator(login_required, name='dispatch')
@@ -371,96 +468,3 @@ class PaymentView(View):
 
         messages.warning(self.request, "Invalid data received")
         return redirect("/payment/stripe/")
-
-@login_required
-def add_to_cart(request, slug):
-    book = get_object_or_404(Book, slug=slug)
-    order_book, created = OrderBook.objects.get_or_create(book=book, user=request.user, ordered=False)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.books.filter(book__slug=book.slug).exists():
-            book.amount -= 1
-            book.save()
-            order_book.quantity += 1
-            order_book.save()
-            messages.info(request, "This book quantity was updated.")
-            return redirect("core:order_summary")
-        else:
-            book.amount -= 1
-            book.save()
-            order.books.add(order_book)
-            messages.info(request, "This book was added to your cart.")
-            return redirect("core:product", slug=slug)
-    else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
-        order.books.add(order_book)
-        messages.info(request, "This book was added to your cart.")
-        return redirect("core:product", slug=slug)
-
-
-@login_required
-def remove_from_cart(request, slug):
-    book = get_object_or_404(Book, slug=slug)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.books.filter(book__slug=book.slug).exists():
-            order_book = OrderBook.objects.filter(book=book, user=request.user, ordered=False)[0]
-            if order_book.quantity >= 1:
-                book.amount += order_book.quantity
-            else:
-                book.amount += 1
-            book.save()
-            order_book.quantity = 0
-            order.books.remove(order_book)
-            order_book.delete()
-            messages.info(request, "This book was removed from your cart.")
-            return redirect("core:order_summary")
-        else:
-            messages.info(request, "This book was not in your cart")
-            return redirect("core:product", slug=slug)
-    else:
-        messages.info(request, "You do not have an active order")
-        return redirect("core:product", slug=slug)
-
-
-@login_required
-def remove_single_book_from_cart(request, slug):
-    book = get_object_or_404(Book, slug=slug)
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.books.filter(book__slug=book.slug).exists():
-            order_book = OrderBook.objects.filter(book=book, user=request.user, ordered=False)[0]
-            if order_book.quantity > 1:
-                order_book.quantity -= 1
-                order_book.save()
-                book.amount += 1
-                book.save()
-            else:
-                remove_from_cart(request, slug)
-            messages.info(request, "This book quantity was updated.")
-            return redirect("core:order_summary")
-        else:
-            messages.info(request, "This book was not in your cart")
-            return redirect("core:product", slug=slug)
-    else:
-        messages.info(request, "You do not have an active order")
-        return redirect("core:product", slug=slug)
-
-
-@method_decorator(login_required, name='dispatch')
-class OrderSummaryView(View):
-    def get(self, *args, **kwargs):
-        try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            context = {
-                'object': order,
-            }
-            return render(self.request, 'core/order_summary.html', context)
-        except ObjectDoesNotExist:
-            messages.warning(self.request, "You do not have an active orders!")
-            return redirect("core:home")

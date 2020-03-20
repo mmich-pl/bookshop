@@ -32,7 +32,10 @@
             <td>
                 <a href="{% url 'core:remove_single_book_from_cart' order_book.book.slug %}"><i class="fas fa-minus mr-2"></i></a>
                 {{ order_book.quantity }}
-                <a href="{% url 'core:add_to_cart' order_book.book.slug %}"><i class="fas fa-plus ml-2"></i></a>
+                {% if not order_book.book.amount == 0%}
+                    <a id="add_to_cart" href="{% url 'core:add_to_cart' order_book.book.slug %}"><i class="fas fa-plus ml-2"></i></a>
+                {% endif %}
+
             </td>
             <td>
             {% if order_book.book.discount_price %}
@@ -77,4 +80,3 @@
   </main>
 
 {% endblock content %}
-

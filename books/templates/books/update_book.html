@@ -63,7 +63,6 @@ label.Category, label.Condition, label.Description, label.Image {
         $("#id_image").removeClass("form-control");
         let labels = ['Title', 'Author', 'Publisher', 'Price', 'Amount', ];
     for (let i=0; i < labels.length; i++) {
-        console.log("'label."+labels[i]+"'");
         let cur_label = "label." + labels[i];
         $(cur_label).addClass("active");
     }

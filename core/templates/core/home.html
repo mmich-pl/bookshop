@@ -139,18 +139,16 @@
     {% block javascript %}
         <script>
 
-        jQuery($ => {
+        $(document).ready(function () {
           let today = new Date();
           $(".date").each(function() {
             let get_date = $(this).val();
             let slug = $(this).data('book');
-            console.log(slug);
             let date = new Date(get_date);
             date.setDate(date.getDate() + 7);
             if ((new Date(today).getTime() <= new Date(date).getTime())) {
 
                     $('#' + slug).removeClass('d-none');
-                console.log('ready!')
             }
           });
         });
@@ -171,17 +169,6 @@
             });
 
 
-
-           {#function compare()#}
-           {# {#}
-           {#     var startDt = document.getElementById("startDate").value;#}
-           {#     var endDt = document.getElementById("endDate").value;#}
-           {##}
-           {#     if( (new Date(startDt).getTime() < new Date(endDt).getTime()))#}
-           {#     {#}
-           {#         // Your code here#}
-           {#     }#}
-           {# }#}
         </script>
     {% endblock %}
 {% endblock content %}

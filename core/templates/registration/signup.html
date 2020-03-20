@@ -58,7 +58,6 @@
 {% block javascript %}
   <script>
     $("form").change(function () {
-        console.log('sanity check');
         let form = $(this).closest("form");
         $.ajax({
         url: form.attr("data-validate-username-or-email-url"),
