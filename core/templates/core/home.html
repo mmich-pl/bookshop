@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
-
+{% load static %}
 {% block content %}
+
         <div class="view" style="background-image: url('{{ STATIC_URL }}/static/core/img/background.jpg'); background-repeat: no-repeat; background-size: cover;">
           <div class="mask rgba-black-strong d-flex justify-content-center align-items-center">
             <div class="text-center white-text mx-5 wow fadeIn">
@@ -52,8 +53,22 @@
         </div>
       </nav>
       <section  class="text-center mb-4">
+
         <div class="row wow fadeIn">
           {% for book in books %}
+
+              {% if forloop.counter == 1 %}
+                   {% include "core/carousel.html" with items=most_popular title="Most visited offets: " %}
+                {% endif %}
+
+              {% if forloop.counter == 9 %}
+                    {% include "core/carousel.html" with items=latest title="Newest Offers:  " %}
+                {% endif %}
+
+              {% if forloop.counter == 20 %}
+                    {% include "core/carousel.html" with items=random title="See also: "  %}
+                {% endif %}
+              {% if book.amount > 0 %}
           <div class="col-lg-3 col-md-6 mb-4">
             <div class="card">
               <div class="view overlay">
@@ -81,6 +96,28 @@
               </div>
             </div>
           </div>
+              {% else %}
+            <div class="col-lg-3 col-md-6 mb-4 disabled">
+            <div class="card">
+              <div class="view overlay">
+                <img src="{{ book.image.url }}" class="card-img-top">
+                <img class="card-img-top" src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%;">
+              </div>
+              <div class="card-body text-center">
+                <a>
+                  <h5>{{ book.get_category_display }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a class="dark-grey-text">{{ book.title }}
+                    </a>
+                  </strong>
+                </h5>
+              </div>
+            </div>
+          </div>
+
+              {% endif %}
           {% endfor %}
         </div>
       </section>
@@ -141,14 +178,17 @@
 
         $(document).ready(function () {
           let today = new Date();
+            console.log("today", today);
           $(".date").each(function() {
             let get_date = $(this).val();
             let slug = $(this).data('book');
             let date = new Date(get_date);
+            console.log(date);
             date.setDate(date.getDate() + 7);
             if ((new Date(today).getTime() <= new Date(date).getTime())) {
-
-                    $('#' + slug).removeClass('d-none');
+                    console.log('#' + slug);
+                let id = ('#' + slug);
+                    $('span'+id).removeClass('d-none');
             }
           });
         });

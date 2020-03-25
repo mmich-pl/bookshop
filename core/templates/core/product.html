@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-
+{% load static %}
 {% block content %}
 
   <main class="mt-5 pt-4">
@@ -7,6 +7,9 @@
       <div class="row wow fadeIn">
         <div class="col-6 mb-4">
           <img  src="{{ object.image.url }}" style="min-height: 100%;">
+            {% if object.amount == 0 %}
+           <img src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%; min-height: 100%;">
+            {% endif %}
         </div>
         <div class="col-6 mb-4">
           <div class="p-4">

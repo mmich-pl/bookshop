@@ -99,7 +99,7 @@ def home(request):
             Q(author__contains=query) | Q(publisher__contains=query)
         ).distinct()
 
-    paginator = Paginator(book_list, 12)
+    paginator = Paginator(book_list, 34)
     page = request.GET.get('page')
 
     try:
@@ -109,9 +109,20 @@ def home(request):
     except EmptyPage:
         books = paginator.page(paginator.num_pages)
 
+    for i in book_list:
+        try:
+            order = OrderBook.objects.get(book__slug=i.slug)
+            if i.amount == 0 and i.date <= (datetime.today() - timedelta(days=3)).date() and order.ordered:
+                i.delete()
+        except ObjectDoesNotExist:
+            continue
+
     context = {
         'books': books,
         'categories': Book.objects.all().values('category').annotate(Count('category')).order_by('category'),
+        'most_popular': Book.objects.all().exclude(amount=0).order_by('-numbers_of_entries')[:7],
+        'latest': Book.objects.all().exclude(amount=0).order_by('-date')[:7],
+        'random': Book.objects.all().exclude(amount=0).order_by('?')[:7],
     }
 
     return render(request, "core/home.html", context)
@@ -135,7 +146,8 @@ class BookDetailView(DetailView):
             self.object.discount_price = self.object.price - self.object.price * 0.20
         self.object.save()
 
-        more_books = Book.objects.filter(title=self.object.title)
+        more_books = Book.objects.filter(title=self.object.title, category=self.object.category,
+                                         author=self.object.author, publisher=self.object.publisher).exclude(amount=0)
         context['amount'] = int(self.object.amount)
         context['amount_json'] = json.dumps(int(self.object.amount))
         if more_books.count() > 1:

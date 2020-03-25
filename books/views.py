@@ -30,7 +30,7 @@ class BookCreateView(BSModalCreateView):
         form.instance.seller = self.request.user
         form.instance.discount_price = float(form.cleaned_data['price'])
         title = form.cleaned_data['title'].strip()
-        other = Book.objects.filter(title=form.instance.title, category=form.instance.category).count()
+        other = Book.objects.filter(title=form.instance.title).count()
         if other < 1:
             form.instance.slug = title.replace(" ", "-")
         else:

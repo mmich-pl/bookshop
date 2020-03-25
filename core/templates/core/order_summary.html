@@ -21,7 +21,7 @@
         {% for order_book in object.books.all %}
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
-            <td>{{ order_book.book.title }}</td>
+            <td><a href="{{ order_book.book.get_absolute_url }}" >{{ order_book.book.title }}</a></td>
             <td>{{ order_book.book.price }}</td>
         {% if order_book.book.discount_price < order_book.book.price %}
             <td>{{ order_book.book.discount_price }}</td>
