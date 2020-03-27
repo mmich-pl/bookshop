@@ -1,18 +1,18 @@
 import time
-
+import os
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic, View
-from django.views.generic import CreateView
-
+from django.views.generic import CreateView, UpdateView
 from .forms import BookForm, PhotoForm
 from .models import Book, Photo
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, \
-                                          BSModalDeleteView
+from bootstrap_modal_forms.generic import BSModalDeleteView
+from django.conf import settings
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -27,11 +27,10 @@ class BooksListView(generic.ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class BookCreateView(BSModalCreateView):
+class BookCreateView(CreateView):
     template_name = 'books/create_book.html'
     form_class = BookForm
     success_message = 'Success: Book was created.'
-    success_url = reverse_lazy('books:list')
 
     def form_valid(self, form, **kwargs):
         form.instance.seller = self.request.user
@@ -44,14 +43,26 @@ class BookCreateView(BSModalCreateView):
             form.instance.slug = str(other) + "-" + title.replace(" ", "-")
         return super().form_valid(form)
 
+    def get_success_url(self):
+        slug = self.object.slug
+        return reverse_lazy('books:upload', kwargs={'slug': slug})
+
 
 @method_decorator(login_required, name='dispatch')
-class BookUpdateView(BSModalUpdateView):
+class BookUpdateView(UpdateView):
     model = Book
     template_name = 'books/update_book.html'
     form_class = BookForm
     success_message = 'Success: Book was updated.'
-    success_url = reverse_lazy('books:list')
+
+    def get_success_url(self):
+        slug = self.object.slug
+        return reverse_lazy('books:upload', kwargs={'slug': slug})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['photos'] = Photo.objects.filter(book=self.object)
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -62,17 +73,34 @@ class BookDeleteView(BSModalDeleteView):
     success_url = reverse_lazy('books:list')
 
 
+def delete_file(request, pk):
+    for file in Photo.objects.filter(id=pk):
+        file.delete()
+    root = settings.MEDIA_ROOT + '/books_img'
+    print(root)
+    folders = list(os.walk(root))[1:]
+
+    for folder in folders:
+        if not folder[2]:
+            os.rmdir(folder[0])
+    return HttpResponseRedirect(request.POST.get('next'))
+
+
 class ProgressBarUploadView(View):
     def get(self, request, slug):
-        photos_list = Photo.objects.all()
+        book = Book.objects.get(slug=slug)
+        photos_list = Photo.objects.filter(book=book)
         try:
-            context = {'photos': photos_list}
+            context = {
+                'book': book,
+                'photos': photos_list
+            }
             return render(self.request, 'books/upload.html', context)
         except ObjectDoesNotExist:
             return render(self.request, 'books/upload.html')
 
     def post(self, request, **kwargs):
-        time.sleep(1)  # You don't need this line. This is just to delay the process so you can see the progress bar testing locally.
+        time.sleep(1)
         form = PhotoForm(self.request.POST, self.request.FILES)
         if form.is_valid():
             slug = self.kwargs['slug']

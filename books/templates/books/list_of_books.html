@@ -2,8 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <!-- Create book button -->
-<button class="create-book btn btn-teal" type="button" name="button">Create book</button>
+    <button class="btn btn-teal" type="button" name="button"><a href="{% url 'books:create_book' %}" style="color: white;">Create book</a></button>
 
     <div class="table-responsive text-nowrap">
 
@@ -22,13 +21,15 @@
     <td>{{ book.title }}</td>
     <td>
           <!-- Update book buttons -->
-      <button type="button" class="update-book btn btn-sm btn-teal" data-id="{% url 'books:update_book' book.slug %}">
-        <span class="fas fa-pen"></span>
+      <button type="button" class="update-book btn btn-sm btn-teal">
+          <a href="{% url 'books:update_book' book.slug %}" style="color: white;">
+              <span class="fas fa-pen"></span></a>
       </button>
       <!-- Delete book buttons -->
       <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'books:delete_book' book.slug %}">
         <span class="fa fa-trash"></span>
       </button>
+
     </td>
     </tr>
 {% endfor %}
@@ -47,13 +48,6 @@
 
 <script type="text/javascript">
   $(function () {
-    // Create book button
-    $(".create-book").modalForm({formURL: "{% url 'books:create_book' %}"});
-
-    // Update book buttons
-    $(".update-book").each(function () {
-      $(this).modalForm({formURL: $(this).data('id')});
-    });
 
     // Delete book buttons
     $(".delete-book").each(function () {

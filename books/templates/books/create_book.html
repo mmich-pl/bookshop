@@ -1,6 +1,8 @@
-{% load widget_tweaks %}
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
 
-<style>
+    <style>
  div.Category, div.Description {
      margin: 50px 0;
  }
@@ -22,66 +24,100 @@ label.Category, label.Condition, label.Description, label.Image {
 
 </style>
 
-<form method="post" action="" enctype="multipart/form-data">
+  <main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+      <div class="row wow fadeIn">
+        <div class="col-6 mb-4">
+
+
+                <div class="text-muted bg-grey text-center" style="padding-top: 4rem; padding-bottom: 4rem; min-height: 450px; min-width: 450px;">
+                <span style="font-size: 4rem; margin: auto;"> <i class="fas fa-camera-retro"></i> </span>
+                <h3>Here will be the photo</h3>
+              </div>
+
+
+        {% if object.amount == 0 %}
+           <img src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%; max-height: 450px; max-width: 450px; position: relative; z-index: 2;">
+        {% endif %}
+        </div>
+        <div class="col-6 mb-4">
+        <form method="post" action="" enctype="multipart/form-data">
   {% csrf_token %}
+          <div class="p-4">
+              <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+                  {% for error in form.non_field_errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
 
-  <div class="modal-header">
-    <h3 class="modal-title">Create Book</h3>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+            {{ form.title.label_tag }}<br>
+        {{ form.title }}<br><br>
 
-  <div class="modal-body">
+          {{ form.description.label_tag }}<br>
+        {{ form.description }}<br>
+{#              <p class="lead font-weight-bold">Description:</p>#}
+{#                        <p>{{ object.description }}</p>#}
+          <ul class="list-group list-group-flush mb-5">
+                            <li class="list-group-item">
 
-    <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
-      {% for error in form.non_field_errors %}
-        {{ error }}
-      {% endfor %}
-    </div>
-
-      {{ form.title.label_tag }}<br>
-        {{ form.title }}<br>
-      {{ form.author.label_tag }}<br>
+          <div class="row">
+              <div class="col-5">
+                  {{ form.author.label_tag }}<br>
         {{ form.author }}<br>
-      {{ form.publisher.label_tag }}<br>
+
+              </div>
+              <div class="col-7">
+                  {{ form.publisher.label_tag }}<br>
         {{ form.publisher }}<br>
-      {{ form.category.label_tag }}<br>
+
+              </div>
+          </div>
+                    </li>
+              <li class="list-group-item">
+
+          <div class="row">
+              <div class="col-5">
+                  {{ form.category.label_tag }}<br>
         {{ form.category }}<br>
-      {{ form.condition.label_tag }}<br>
+
+              </div>
+              <div class="col-7">
+               {{ form.condition.label_tag }}<br>
         {{ form.condition }}<br>
+              </div>
+
+          </div>
+                    </li>
+              <li class="list-group-item">
+
+          <div class="row">
+              <div class="col-5">
+
       {{ form.amount.label_tag }}<br>
         {{ form.amount }}<br>
-      {{ form.price.label_tag }}<br>
+              </div>
+              <div class="col-7">
+                  {{ form.price.label_tag }}<br>
         {{ form.price }}<br>
-      {{ form.description.label_tag }}<br>
-        {{ form.description }}<br>
-  
-{#    {% for field in form %}#}
-{#      <div class="md-form {{ field.label }}">#}
-{#        <label class="{{ field.label }}" for="{{ field.id_for_label }}">{{ field.label }}</label>#}
-{#        {% render_field field class="form-control" %}#}
-{#        <div class="{% if field.errors %} invalid{% endif %}">#}
-{#          {% for error in field.errors %}#}
-{#            <p class="help-block">{{ error }}</p>#}
-{#          {% endfor %}#}
-{#        </div>#}
-{#      </div>#}
+              </div>
+          </div>
+                    </li>
+        </ul>
+                      <button type="submit" class="btn btn-teal">Next</button>
+
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+
+{% endblock content %}
 
 
 
 
-{##}
-{#    {% endfor %}#}
-  </div>
 
-  <div class="modal-footer">
-    <button type="button" class="submit-btn btn btn-teal">Create</button>
-  </div>
 
-</form>
-
-<script>
-    $("#id_image").removeClass("form-control");
-    $('label.Amount').addClass("active");
-</script>

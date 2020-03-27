@@ -7,5 +7,5 @@ urlpatterns = [
     path('book/update/<slug>', views.BookUpdateView.as_view(), name='update_book'),
     path('book/delete/<slug>', views.BookDeleteView.as_view(), name='delete_book'),
     path('book/<slug>/upload/', views.ProgressBarUploadView.as_view(), name='upload'),
-
+    path('upload/<int:pk>/', views.delete_file, name='upload_delete'),
 ]
