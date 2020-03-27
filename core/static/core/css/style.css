@@ -4,6 +4,10 @@ body,
 .view {
   height: 100%; }
 
+body {
+  background-color: white;
+}
+
 /* Half Page Carousel itself*/
 .carousel {
   height: 50%; }

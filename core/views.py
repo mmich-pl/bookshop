@@ -8,8 +8,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from .models import Book, OrderBook, Order, Address, Payment
+from .models import OrderBook, Order, Address, Payment
 from profiles.models import Profile
+from books.models import Book, Photo
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
@@ -120,10 +121,12 @@ def home(request):
     context = {
         'books': books,
         'categories': Book.objects.all().values('category').annotate(Count('category')).order_by('category'),
-        'most_popular': Book.objects.all().exclude(amount=0).order_by('-numbers_of_entries')[:7],
-        'latest': Book.objects.all().exclude(amount=0).order_by('-date')[:7],
-        'random': Book.objects.all().exclude(amount=0).order_by('?')[:7],
     }
+
+    if book_list.count() > 14:
+        context['most_popular'] = Book.objects.all().exclude(amount=0).order_by('-numbers_of_entries')[:7]
+        context['latest'] = Book.objects.all().exclude(amount=0).order_by('-date')[:7]
+        context['random'] = Book.objects.all().exclude(amount=0).order_by('?')[:7]
 
     return render(request, "core/home.html", context)
 
@@ -150,6 +153,7 @@ class BookDetailView(DetailView):
                                          author=self.object.author, publisher=self.object.publisher).exclude(amount=0)
         context['amount'] = int(self.object.amount)
         context['amount_json'] = json.dumps(int(self.object.amount))
+        context['photos'] = Photo.objects.filter(book=self.object)
         if more_books.count() > 1:
             context['more_books'] = more_books.difference(Book.objects.filter(pk=self.object.pk))
         else:
@@ -182,6 +186,8 @@ def add_to_cart(request, slug):
         ordered_date = timezone.now()
         order = Order.objects.create(
             user=request.user, ordered_date=ordered_date)
+        book.amount -= 1
+        book.save()
         order.books.add(order_book)
         messages.info(request, "This book was added to your cart.")
         return redirect("core:product", slug=slug)

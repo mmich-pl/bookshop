@@ -22,11 +22,11 @@
     <td>{{ book.title }}</td>
     <td>
           <!-- Update book buttons -->
-      <button type="button" class="update-book btn btn-sm btn-teal" data-id="{% url 'update_book' book.slug %}">
+      <button type="button" class="update-book btn btn-sm btn-teal" data-id="{% url 'books:update_book' book.slug %}">
         <span class="fas fa-pen"></span>
       </button>
       <!-- Delete book buttons -->
-      <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'delete_book' book.slug %}">
+      <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'books:delete_book' book.slug %}">
         <span class="fa fa-trash"></span>
       </button>
     </td>
@@ -48,7 +48,7 @@
 <script type="text/javascript">
   $(function () {
     // Create book button
-    $(".create-book").modalForm({formURL: "{% url 'create_book' %}"});
+    $(".create-book").modalForm({formURL: "{% url 'books:create_book' %}"});
 
     // Update book buttons
     $(".update-book").each(function () {

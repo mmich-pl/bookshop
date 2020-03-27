@@ -13,9 +13,7 @@ This is a store with used manuals where logged in users can buy or sell them
 * fully working creating sell item views
 
 ###### TODO:
-* payment in real
-* system which split offers from the different sellers
-* different 'bank' account
+* recreate book create form template
 
 ## Running the Project Locally
 

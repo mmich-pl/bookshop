@@ -1441,6 +1441,17 @@ button.bg-secondary:focus {
 .border-secondary {
   border-color: #a6c !important; }
 
+.bg-grey {
+  background-color: #f5f5f5 !important; }
+
+a.bg-grey:hover, a.bg-grey:focus,
+button.bg-grey:hover,
+button.bg-grey:focus {
+  background-color: #e8e8e8 !important; }
+
+
+
+
 .bg-dark {
   background-color: #212121 !important; }
 
@@ -1619,42 +1630,6 @@ a.text-light:hover, a.text-light:focus {
 
 .zoom:hover img, .zoom:hover video {
   transform: scale(1.1); }
-
-.pattern-1 {
-  background: url("../img/overlays/01.png");
-  background-attachment: fixed; }
-
-.pattern-2 {
-  background: url("../img/overlays/02.png");
-  background-attachment: fixed; }
-
-.pattern-3 {
-  background: url("../img/overlays/03.png");
-  background-attachment: fixed; }
-
-.pattern-4 {
-  background: url("../img/overlays/04.png");
-  background-attachment: fixed; }
-
-.pattern-5 {
-  background: url("../img/overlays/05.png");
-  background-attachment: fixed; }
-
-.pattern-6 {
-  background: url("../img/overlays/06.png");
-  background-attachment: fixed; }
-
-.pattern-7 {
-  background: url("../img/overlays/07.png");
-  background-attachment: fixed; }
-
-.pattern-8 {
-  background: url("../img/overlays/08.png");
-  background-attachment: fixed; }
-
-.pattern-9 {
-  background: url("../img/overlays/09.png");
-  background-attachment: fixed; }
 
 /*!
  * Waves v0.7.6

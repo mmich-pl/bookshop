@@ -2,13 +2,18 @@
 <div class="text-center row my-3">
         <p class="h4 mx-auto text-uppercase">{{ title }}</p>
 </div>
-<div class="owl-carousel owl-theme" >
+<div class="owl-carousel carousel owl-theme" >
   {% for book in items %}
     <div class="item p-1">
             <div class="card">
               <div class="view overlay">
-                <img src="{{ book.image.url }}" class="card-img-top"
-                  alt="">
+                    {% for photo in book.photos.all %}
+                    {% if forloop.counter == 1  %}
+                        <img class="card-img-top" src="{{ photo.file.url }}">
+                    {% endif %}
+                    {% empty %}
+                        <img class="card-img-top" src="{% static 'core/img/def_book.png' %}">
+                {% endfor %}
                 <a href="{{ book.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
                 </a>

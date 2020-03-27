@@ -37,8 +37,8 @@ def random_img():
 
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s.%s" % (instance.slug, ext)
-    return os.path.join('books_img', filename)
+    filename = "%s.%s" % (instance.book.slug, ext)
+    return os.path.join('books_img', instance.book.slug, filename)
 
 
 class Book(models.Model):
@@ -53,22 +53,11 @@ class Book(models.Model):
     description = models.TextField()
     date = models.DateField(default=timezone.now)
     numbers_of_entries = models.IntegerField(default=0)
-    image = models.ImageField(default=random_img, upload_to=content_file_name)
-    amount = models.PositiveSmallIntegerField(default=1)
+    amount = models.PositiveSmallIntegerField(default=0)
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title or ''
-
-    def save(self, **kwargs):
-        super().save()
-
-        img = Image.open(self.image.path)
-
-        if img.height > 450 or img.width > 450:
-            output_size = (450, 450)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
 
     def get_absolute_url(self):
         return reverse("core:product", kwargs={'slug': self.slug})
@@ -80,3 +69,17 @@ class Book(models.Model):
         return reverse("core:remove_from_cart", kwargs={'slug': self.slug})
 
 
+class Photo(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='photos')
+    file = models.ImageField(default=random_img, upload_to=content_file_name)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, **kwargs):
+        super().save()
+
+        img = Image.open(self.file.path)
+
+        if img.height > 450 or img.width > 450:
+            output_size = (450, 450)
+            img.thumbnail(output_size)
+            img.save(self.file.path)

@@ -6,10 +6,21 @@
     <div class="container dark-grey-text mt-5">
       <div class="row wow fadeIn">
         <div class="col-6 mb-4">
-          <img  src="{{ object.image.url }}" style="min-height: 100%;">
-            {% if object.amount == 0 %}
-           <img src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%; min-height: 100%;">
-            {% endif %}
+
+            <div class="owl-carousel products owl-theme" >
+        {% for photo in photos %}
+            <div class="item" style="max-width: 100%;">
+                <img src="{{ photo.file.url }}" style="max-height: 450px; max-width: 450px; z-index: 1;">
+
+            </div>
+            {% empty %}
+            <img style="height: 450px; width: 450px;" src="{% static 'core/img/def_book.png' %}">
+        {% endfor %}
+        </div>
+
+        {% if object.amount == 0 %}
+           <img src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%; max-height: 450px; max-width: 450px; position: relative; z-index: 2;">
+        {% endif %}
         </div>
         <div class="col-6 mb-4">
           <div class="p-4">
@@ -97,7 +108,13 @@
         {% for book in more_books %}
 
         <div class="col-2">
-            <a href="{{ book.get_absolute_url }}"><img src="{{ book.image.url }}" class="img-fluid"></a>
+            {% for photo in book.photos.all %}
+                    {% if forloop.counter == 1  %}
+                        <a href="{{ book.get_absolute_url }}"><img class="img-fluid" src="{{ photo.file.url }}"></a>
+                    {% endif %}
+                    {% empty %}
+                        <a href="{{ book.get_absolute_url }}"><img class="img-fluid" src="{% static 'core/img/def_book.png' %}"></a>
+                {% endfor %}
         </div>
 
         <div class="col-4">
@@ -126,5 +143,23 @@
                 $("#add_to_cart").removeClass("disabled");
             }
         });
+
+
+                $('.products').owlCarousel({
+                items: 1,
+                animateOut: 'fadeOut',
+                autoplay:true,
+                autoplayTimeout:7500,
+                autoplayHoverPause:true,
+                loop: true,
+              });
+              $('.item').owlCarousel({
+                animateOut: 'slideOutDown',
+                animateIn: 'flipInX',
+                items: 1,
+                smartSpeed: 450
+              });
+
+
 </script>
 {% endblock %}

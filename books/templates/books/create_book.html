@@ -40,17 +40,39 @@ label.Category, label.Condition, label.Description, label.Image {
       {% endfor %}
     </div>
 
-    {% for field in form %}
-      <div class="md-form {{ field.label }}">
-        <label class="{{ field.label }}" for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {% render_field field class="form-control" %}
-        <div class="{% if field.errors %} invalid{% endif %}">
-          {% for error in field.errors %}
-            <p class="help-block">{{ error }}</p>
-          {% endfor %}
-        </div>
-      </div>
-    {% endfor %}
+      {{ form.title.label_tag }}<br>
+        {{ form.title }}<br>
+      {{ form.author.label_tag }}<br>
+        {{ form.author }}<br>
+      {{ form.publisher.label_tag }}<br>
+        {{ form.publisher }}<br>
+      {{ form.category.label_tag }}<br>
+        {{ form.category }}<br>
+      {{ form.condition.label_tag }}<br>
+        {{ form.condition }}<br>
+      {{ form.amount.label_tag }}<br>
+        {{ form.amount }}<br>
+      {{ form.price.label_tag }}<br>
+        {{ form.price }}<br>
+      {{ form.description.label_tag }}<br>
+        {{ form.description }}<br>
+  
+{#    {% for field in form %}#}
+{#      <div class="md-form {{ field.label }}">#}
+{#        <label class="{{ field.label }}" for="{{ field.id_for_label }}">{{ field.label }}</label>#}
+{#        {% render_field field class="form-control" %}#}
+{#        <div class="{% if field.errors %} invalid{% endif %}">#}
+{#          {% for error in field.errors %}#}
+{#            <p class="help-block">{{ error }}</p>#}
+{#          {% endfor %}#}
+{#        </div>#}
+{#      </div>#}
+
+
+
+
+{##}
+{#    {% endfor %}#}
   </div>
 
   <div class="modal-footer">

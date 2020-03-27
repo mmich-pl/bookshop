@@ -57,23 +57,33 @@
         <div class="row wow fadeIn">
           {% for book in books %}
 
-              {% if forloop.counter == 1 %}
+              {% if forloop.counter == 1 and most_popular.exists %}
                    {% include "core/carousel.html" with items=most_popular title="Most visited offets: " %}
                 {% endif %}
 
-              {% if forloop.counter == 9 %}
+              {% if forloop.counter == 9  and latest.exists %}
                     {% include "core/carousel.html" with items=latest title="Newest Offers:  " %}
                 {% endif %}
 
-              {% if forloop.counter == 20 %}
+              {% if forloop.counter == 20 and random.exists %}
                     {% include "core/carousel.html" with items=random title="See also: "  %}
                 {% endif %}
               {% if book.amount > 0 %}
           <div class="col-lg-3 col-md-6 mb-4">
             <div class="card">
               <div class="view overlay">
-                <img src="{{ book.image.url }}" class="card-img-top"
-                  alt="">
+
+
+                {% for photo in book.photos.all %}
+                    {% if forloop.counter == 1  %}
+                        <img class="card-img-top" src="{{ photo.file.url }}">
+                    {% endif %}
+                    {% empty %}
+                        <img class="card-img-top" src="{% static 'core/img/def_book.png' %}">
+                {% endfor %}
+
+
+
                 <a href="{{ book.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
                 </a>
@@ -100,7 +110,13 @@
             <div class="col-lg-3 col-md-6 mb-4 disabled">
             <div class="card">
               <div class="view overlay">
-                <img src="{{ book.image.url }}" class="card-img-top">
+                {% for photo in book.photos.all %}
+                    {% if forloop.counter == 1  %}
+                        <img class="card-img-top" src="{{ photo.file.url }}">
+                    {% endif %}
+                    {% empty %}
+                        <img class="card-img-top" src="{% static 'core/img/def_book.png' %}">
+                {% endfor %}
                 <img class="card-img-top" src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%;">
               </div>
               <div class="card-body text-center">
@@ -178,15 +194,12 @@
 
         $(document).ready(function () {
           let today = new Date();
-            console.log("today", today);
           $(".date").each(function() {
             let get_date = $(this).val();
             let slug = $(this).data('book');
             let date = new Date(get_date);
-            console.log(date);
             date.setDate(date.getDate() + 7);
             if ((new Date(today).getTime() <= new Date(date).getTime())) {
-                    console.log('#' + slug);
                 let id = ('#' + slug);
                     $('span'+id).removeClass('d-none');
             }
