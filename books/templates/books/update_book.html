@@ -5,23 +5,10 @@
 {% block content %}
 
 <style>
- div.Category, div.Description {
-     margin: 50px 0;
- }
 
-
-
-label.Category, label.Condition, label.Description, label.Image {
+#div_id_condition label, #div_id_category label {
     margin-top: -40px;
 }
-
-
-    label.Image {
-        line-height: 5px;
-        color: white;
-        cursor: pointer;
-    }
-
 
 </style>
 
@@ -43,64 +30,85 @@ label.Category, label.Condition, label.Description, label.Image {
 
         </div>
         <div class="col-6 mb-4">
+
         <form method="post" action="" enctype="multipart/form-data">
   {% csrf_token %}
           <div class="p-4">
-              <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
-                  {% for error in form.non_field_errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
 
-            {{ form.title.label_tag }}<br>
-        {{ form.title }}<br><br>
 
-          {{ form.description.label_tag }}<br>
-        {{ form.description }}<br>
-{#              <p class="lead font-weight-bold">Description:</p>#}
-{#                        <p>{{ object.description }}</p>#}
+     <div id="div_id_title" class="md-form">
+         <label for="id_title" class="requiredField">Title</label>
+         <input type="text" name="title" class="form-control" required id="id_title" value="{{ form.instance.title }}">
+     </div>
+      <div id="div_id_description" class="md-form">
+         <label for="id_description" class="requiredField">Description</label>
+          <textarea type="text" name="description" class="form-control md-textarea" required id="id_description">{{ form.instance.description }}</textarea>
+     </div>
+
+
           <ul class="list-group list-group-flush mb-5">
                             <li class="list-group-item">
 
           <div class="row">
               <div class="col-5">
-                  {{ form.author.label_tag }}<br>
-        {{ form.author }}<br>
 
+          <div id="div_id_author" class="md-form">
+             <label for="id_author" class="requiredField">Author</label>
+             <input type="text" name="author" class="form-control" value="{{ form.instance.author }}" required id="id_author">
+          </div>
               </div>
-              <div class="col-7">
-                  {{ form.publisher.label_tag }}<br>
-        {{ form.publisher }}<br>
 
+              <div class="col-7">
+                <div id="div_id_publisher" class="md-form">
+                <label for="id_publisher" class="requiredField">Publisher</label>
+                <input type="text" name="publisher" class="form-control" value="{{ form.instance.publisher }}" required id="id_publisher">
               </div>
           </div>
-                    </li>
-              <li class="list-group-item">
 
-          <div class="row">
-              <div class="col-5">
-                  {{ form.category.label_tag }}<br>
-        {{ form.category }}<br>
-
-              </div>
-              <div class="col-7">
-               {{ form.condition.label_tag }}<br>
-        {{ form.condition }}<br>
-              </div>
 
           </div>
                     </li>
               <li class="list-group-item">
 
           <div class="row">
-              <div class="col-5">
 
-      {{ form.amount.label_tag }}<br>
-        {{ form.amount }}<br>
+
+              <div class="col-6">
+                   <div id="div_id_category" class="md-form">
+                <label for="id_category" class="requiredField">Category</label>
+                {{ form.category }}
               </div>
-              <div class="col-7">
-                  {{ form.price.label_tag }}<br>
-        {{ form.price }}<br>
+
+
+              </div>
+
+
+
+              <div class="col-6">
+                  <div id="div_id_condition" class="md-form">
+                <label for="id_condition" class="requiredField">Condition</label>
+                {{ form.condition }}
+              </div>
+              </div>
+
+          </div>
+                    </li>
+              <li class="list-group-item">
+
+          <div class="row">
+              <div class="col-6">
+ <div id="div_id_amount" class="md-form">
+                <label for="id_amount" class="requiredField">Amount</label>
+                <input type="number" name="amount" class="form-control" value="{{ form.instance.amount }}" min="0" required id="id_amount">
+              </div>
+              </div>
+              <div class="col-6">
+
+ <div id="div_id_price" class="md-form">
+                <label for="id_price" class="requiredField">Price</label>
+                <input type="number" name="price" class="form-control" value="{{ form.instance.price }}" min="0" required id="id_price">
+              </div>
+
               </div>
           </div>
                     </li>
@@ -119,15 +127,6 @@ label.Category, label.Condition, label.Description, label.Image {
 
 {% block javascript %}
 <script>
-    $( document ).ready(function() {
-        $("#id_image").removeClass("form-control");
-        let labels = ['Title', 'Author', 'Publisher', 'Price', 'Amount', ];
-    for (let i=0; i < labels.length; i++) {
-        let cur_label = "label." + labels[i];
-        $(cur_label).addClass("active");
-    }
-});
-
                     $('.products').owlCarousel({
                 items: 1,
                 animateOut: 'fadeOut',
@@ -142,6 +141,7 @@ label.Category, label.Condition, label.Description, label.Image {
                 items: 1,
                 smartSpeed: 450
               });
+
 
 
 </script>
