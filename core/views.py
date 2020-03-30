@@ -35,8 +35,8 @@ def create_account(self, form):
     user.is_active = False
     user.save()
     current_site = get_current_site(self.request)
-    mail_subject = 'Activate your account.'
-    message = render_to_string('core/acc_active_email.html', {
+    email_subject = 'Activate your account.'
+    message = render_to_string('core/email_templates/account_active_email.html', {
         'user': user,
         'domain': current_site.domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -44,7 +44,7 @@ def create_account(self, form):
     })
     to_email = form.cleaned_data.get('email')
     email = EmailMessage(
-        mail_subject, message, to=[to_email]
+        email_subject, message, to=[to_email]
     )
     email.send()
     messages.info(self.request, 'Please confirm your email address to complete the registration')
@@ -112,7 +112,7 @@ def home(request):
 
     for i in book_list:
         try:
-            order = OrderBook.objects.get(book__slug=i.slug)
+            order = OrderBook.objects.filter(book__slug=i.slug)
             if i.amount == 0 and i.date <= (datetime.today() - timedelta(days=3)).date() and order.ordered:
                 i.delete()
         except ObjectDoesNotExist:
@@ -257,7 +257,6 @@ class OrderSummaryView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
-            print(order.books.all())
             context = {
                 'object': order,
             }
@@ -277,13 +276,9 @@ class CheckoutView(View):
             'order': order
         }
 
-        shipping_address_qs = Address.objects.filter(user=self.request.user, address_type='S', default=True)
-        if shipping_address_qs.exists():
-            context.update({'default_shipping_address': shipping_address_qs[0]})
-
-        billing_address_qs = Address.objects.filter(user=self.request.user, address_type='B', default=True)
-        if billing_address_qs.exists():
-            context.update({'default_billing_address': billing_address_qs[0]})
+        address_qs = Address.objects.filter(user=self.request.user, default=True)
+        if address_qs.exists():
+            context.update({'default_address': address_qs[0]})
 
         return render(self.request, "core/checkout.html", context)
 
@@ -292,91 +287,47 @@ class CheckoutView(View):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             if form.is_valid():
-                use_default_shipping = form.cleaned_data.get('use_default_shipping')
-                if use_default_shipping:
+                use_default = form.cleaned_data.get('use_default')
+                if use_default:
                     print("Using the default shipping address")
-                    address_qs = Address.objects.filter(user=self.request.user, address_type='S', default=True)
+                    address_qs = Address.objects.filter(user=self.request.user, default=True)
                     if address_qs.exists():
-                        shipping_address = address_qs[0]
-                        order.shipping_address = shipping_address
+                        address = address_qs[0]
+                        order.address = address
                         order.save()
                     else:
                         messages.warning(self.request, "No default shipping address available")
                         return redirect('core:checkout')
                 else:
-                    print("User is entering a new shipping address")
-                    shipping_address_form_form = form.cleaned_data.get('shipping_street_address')
-                    shipping_apartment_address = form.cleaned_data.get('shipping_apartment_address')
-                    shipping_country = form.cleaned_data.get('shipping_country')
-                    shipping_zip = form.cleaned_data.get('shipping_zip')
+                    print("User is entering a new address")
+                    address_form_form = form.cleaned_data.get('street_address')
+                    apartment_address = form.cleaned_data.get('apartment_address')
+                    country = form.cleaned_data.get('country')
+                    city = form.cleaned_data.get('city')
+                    zip = form.cleaned_data.get('zip')
 
-                    if is_valid_form([shipping_address_form_form, shipping_apartment_address, shipping_country, shipping_zip]):
-                        shipping_address = Address(user=self.request.user, street_address=shipping_address_form_form,
-                                                   apartment_address=shipping_apartment_address, country=shipping_country,
-                                                   zip=shipping_zip, address_type='S')
-                        shipping_address.save()
-                        order.shipping_address = shipping_address
+                    if is_valid_form([address_form_form, apartment_address, country, city, zip]):
+                        address = Address(user=self.request.user, street_address=address_form_form,
+                                          apartment_address=apartment_address, country=country, city=city,
+                                          zip=zip)
+                        address.save()
+                        order.address = address
                         order.save()
-                        set_default_shipping = form.cleaned_data.get('set_default_shipping')
-                        if set_default_shipping:
-                            address_qs = Address.objects.filter(user=self.request.user, address_type='S', default=True)
+                        set_default = form.cleaned_data.get('set_default')
+                        if set_default:
+                            address_qs = Address.objects.filter(user=self.request.user, default=True)
                             if address_qs.count() > 0:
                                 for i in address_qs:
                                     i.delete()
-                            shipping_address.default = True
-                            shipping_address.save()
+                            address.default = True
+                            address.save()
                     else:
                         messages.warning(self.request, "Please fill in the required shipping address fields")
-
-                use_default_billing = form.cleaned_data.get('use_default_billing')
-                same_billing_address = form.cleaned_data.get('same_billing_address')
-
-                if same_billing_address:
-                    billing_address = shipping_address
-                    billing_address.pk = None
-                    billing_address.save()
-                    billing_address.address_type = 'B'
-                    billing_address.save()
-                    order.billing_address = billing_address
-                    order.save()
-
-                elif use_default_billing:
-                    print("Using the default billing address")
-                    address_qs = Address.objects.filter(user=self.request.user, address_type='B', default=True)
-                    if address_qs.exists():
-                        billing_address = address_qs[0]
-                        order.billing_address = billing_address
-                        order.save()
-                    else:
-                        messages.warning(self.request, "No default billing address available")
-                        return redirect('core:checkout')
-                else:
-                    print("User is entering a new billing address")
-                    billing_address_form_form = form.cleaned_data.get('billing_address')
-                    billing_apartment_address = form.cleaned_data.get('billing_apartment_address')
-                    billing_country = form.cleaned_data.get('billing_country')
-                    billing_zip = form.cleaned_data.get('billing_zip')
-
-                    if is_valid_form([billing_address_form_form, billing_country, billing_zip]):
-                        billing_address = Address(user=self.request.user, street_address=billing_address_form_form,
-                                                  apartment_address=billing_apartment_address, country=billing_country,
-                                                  zip=billing_zip, address_type='B')
-                        billing_address.save()
-                        order.billing_address = billing_address
-                        order.save()
-                        set_default_billing = form.cleaned_data.get('set_default_billing')
-                        if set_default_billing:
-                            billing_address.default = True
-                            billing_address.save()
-                    else:
-                        messages.warning(self.request, "Please fill in the required billing address fields")
 
                 payment_option = form.cleaned_data.get('payment_option')
 
                 if payment_option == 'S':
                     return redirect('core:payment', payment_option='stripe')
-                elif payment_option == 'P':
-                    return redirect('core:payment', payment_option='paypal')
                 else:
                     messages.warning(self.request, "Invalid payment option selected")
                     return redirect('core:checkout')
@@ -400,7 +351,6 @@ class PaymentView(View):
             )
             card_list = cards['data']
             if len(card_list) > 0:
-                # update the context with the default card
                 context.update({
                     'card': card_list[0]
                 })
@@ -416,6 +366,10 @@ class PaymentView(View):
             save = form.cleaned_data.get('save')
             use_default = form.cleaned_data.get('use_default')
 
+            print(token)
+            print(save)
+            print(use_default)
+
             if save:
                 if user_profile.stripe_customer_id != '' and user_profile.stripe_customer_id is not None:
                     customer = stripe.Customer.retrieve(user_profile.stripe_customer_id)
@@ -429,13 +383,13 @@ class PaymentView(View):
                     user_profile.save()
 
             amount = int(order.get_total() * 100)
-
             try:
+                print("sanity")
                 if use_default or save:
                     charge = stripe.Charge.create(amount=amount, currency="pln",
                                                   customer=user_profile.stripe_customer_id)
                 else:
-                    charge = stripe.Charge.create(amount=amount,  currency="pln", source=token)
+                    charge = stripe.Charge.create(amount=amount, currency="pln", source=token)
 
                 payment = Payment()
                 payment.stripe_charge_id = charge['id']
@@ -461,26 +415,44 @@ class PaymentView(View):
                 return redirect("core:home")
 
             except stripe.error.RateLimitError as e:
+                body = e.json_body
+                err = body.get('error', {})
+                messages.warning(self.request, f"{err.get('message')}")
                 messages.warning(self.request, "Rate limit error")
                 return redirect("core:home")
 
             except stripe.error.InvalidRequestError as e:
+                body = e.json_body
+                err = body.get('error', {})
+                messages.warning(self.request, f"{err.get('message')}")
                 messages.warning(self.request, "Invalid parameters")
                 return redirect("core:home")
 
             except stripe.error.AuthenticationError as e:
+                body = e.json_body
+                err = body.get('error', {})
+                messages.warning(self.request, f"{err.get('message')}")
                 messages.warning(self.request, "Not authenticated")
                 return redirect("core:home")
 
             except stripe.error.APIConnectionError as e:
+                body = e.json_body
+                err = body.get('error', {})
+                messages.warning(self.request, f"{err.get('message')}")
                 messages.warning(self.request, "Network error")
                 return redirect("core:home")
 
             except stripe.error.StripeError as e:
+                body = e.json_body
+                err = body.get('error', {})
+                messages.warning(self.request, f"{err.get('message')}")
                 messages.warning(self.request, "Something went wrong. You were not charged. Please try again.")
                 return redirect("core:home")
 
             except Exception as e:
+                body = e.json_body
+                err = body.get('error', {})
+                messages.warning(self.request, f"{err.get('message')}")
                 messages.warning(self.request, "A serious error occurred. We have been notifed.")
                 return redirect("core:home")
 

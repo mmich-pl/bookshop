@@ -3,11 +3,6 @@ from django.db import models
 from django_countries.fields import CountryField
 from books.models import Book
 
-ADDRESS_CHOICES = (
-    ('B', 'Billing'),
-    ('S', 'Shipping'),
-)
-
 
 class OrderBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -60,8 +55,8 @@ class Address(models.Model):
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=10)
     country = CountryField(multiple=False)
+    city = models.CharField(max_length=30)
     zip = models.CharField(max_length=100)
-    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=False)
 
     def __str__(self):

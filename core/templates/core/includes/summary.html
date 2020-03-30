@@ -1,6 +1,9 @@
+
+
+
           <h4 class="d-flex justify-content-between align-books-center mb-3">
             <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">{{ order.books.count }}</span>
+            <span class="badge badge-pill" style="color: #fff !important; background-color: #00bfa5 !important;">{{ order.books.count }}</span>
           </h4>
           <ul class="list-group mb-3  z-depth-1">
             {% for order_book in order.books.all %}

@@ -13,90 +13,53 @@
             {{ form.errors }}
             {{ form.non_field_errors }}
 
-            <h3>Shipping Address</h3>
-                <div class="hideable_shipping_form">
-              <div class="md-form mb-5">
-                <input type="text" name="shipping_street_address" id="shipping_street_address" class="form-control">
-                <label for="shipping_street_address" class="">Street Address</label>
+            <h3>Address</h3>
+                <div class="hideable_form">
+                    <div class="row">
+              <div class="md-form mb-5 col-8">
+                <input type="text" name="street_address" id="street_address" class="form-control">
+                <label for="street_address" class="ml-3">Street Address</label>
               </div>
-              <div class="md-form mb-5">
-                <input type="text" name="shipping_apartment_address" id="shipping_apartment_address" class="form-control">
-                <label for="shipping_apartment_address" class="">Apartment Address </label>
+              <div class="md-form mb-5 col-4">
+                <input type="text" name="apartment_address" id="apartment_address" class="form-control">
+                <label for="apartment_address" class="ml-3">Apartment Address </label>
               </div>
+                    </div>
+
               <div class="row">
                 <div class=" col-lg-4 col-md-12 mb-4">
                   <label for="country">Country</label>
-                  {{ form.shipping_country }}
+                  {{ form.country }}
                   <div class="invalid-feedback">
                     Please select a valid country.
                   </div>
                 </div>
-                <div class="md-form col-lg-4 col-md-6 mb-4 ml-5">
-                  <label for="shipping_zip" class="ml-3"> Code</label>
-                  <input type="text" name="shipping_zip" id="shipping_zip" class="form-control">
+                <div class="md-form col-lg-4 mb-4">
+                  <label for="city" class="ml-3"> City</label>
+                  <input type="text" name="city" id="city" class="form-control">
+                  <div class="invalid-feedback">
+                    City required.
+                  </div>
+                </div>
+                  <div class="md-form col-lg-4 mb-4">
+                  <label for="zip" class="ml-3"> Code</label>
+                  <input type="text" name="zip" id="zip" class="form-control">
                   <div class="invalid-feedback">
                     Zip code required.
                   </div>
                 </div>
               </div>
               <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="same_billing_address" id="same_billing_address">
-                <label class="custom-control-label" for="same_billing_address">Billing address is the same as my shipping address</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping">
-                <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
+                <input type="checkbox" class="custom-control-input" name="set_default" id="set_default">
+                <label class="custom-control-label" for="set_default">Save as default shipping address</label>
               </div>
                 </div>
-                {% if default_shipping_address %}
+                {% if default_address %}
               <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
-                <label class="custom-control-label" for="use_default_shipping">Use default shipping address:{{ default_shipping_address.street_address|truncatechars:10 }}</label>
+                <input type="checkbox" class="custom-control-input" name="use_default" id="use_default">
+                <label class="custom-control-label" for="use_default">Use default address: {{ default_address.street_address|truncatechars:15 }} {{ default_address.apartment_address }}</label>
               </div>
               {% endif %}
-
-              <hr>
-
-                <h3>Billing Address</h3>
-                <div class="hideable_billing_form">
-                <div class="md-form mb-5">
-                <input type="text" name="billing_street_address" id="billing_street_address" class="form-control">
-                <label for="billing_street_address" class="">Street Address</label>
-              </div>
-              <div class="md-form mb-5">
-                <input type="text" name="billing_apartment_address" id="billing_apartment_address" class="form-control">
-                <label for="billing_apartment_address" class="">Apartment Address </label>
-              </div>
-              <div class="row">
-                <div class=" col-lg-4 col-md-12 mb-4">
-                  <label for="country">Country</label>
-                  {{ form.billing_country }}
-                  <div class="invalid-feedback">
-                    Please select a valid country.
-                  </div>
-                </div>
-                <div class="md-form col-lg-4 col-md-6 mb-4 ml-5">
-                  <label for="billing_zip" class="ml-3"> Code</label>
-                  <input type="text" name="billing_zip" id="billing_zip" class="form-control">
-                  <div class="invalid-feedback">
-                    Zip code required.
-                  </div>
-                </div>
-              </div>
-              <hr>
-
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="set_default_billing" id="set_default_billing">
-                <label class="custom-control-label" for="set_default_billing">Save as default billing address</label>
-              </div>
-                </div>
-                {% if default_billing_address %}
-                <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="use_default_billing" id="use_default_billing">
-                <label class="custom-control-label" for="use_default_billing">Use default billing address: {{ default_billing_address.street_address|truncatechars:10 }}</label>
-              </div>
-              {% endif %}
-
 
               <hr>
 
@@ -117,7 +80,7 @@
         </div>
 
         <div class="col-md-4 mb-4">
-        {% include 'core/summary.html' %}
+        {% include 'core/includes/summary.html' %}
         </div>
       </div>
     </div>
@@ -129,18 +92,13 @@
     <script>
 
     $(document).ready(function() {
-        let use_default_shipping = document.querySelector("input[name=use_default_shipping]");
-        let use_default_billing = document.querySelector("input[name=use_default_billing]");
-        let hideable_shipping_form = $('.hideable_shipping_form');
-        let hideable_billing_form = $('.hideable_billing_form');
+        let use_default = document.querySelector("input[name=use_default]");
+        let hideable_form = $('.hideable_form');
 
-        $(use_default_shipping).change(function () {
-            hideable_shipping_form.slideToggle();
+        $(use_default).change(function () {
+            hideable_form.slideToggle();
         });
 
-        $(use_default_billing).change(function () {
-            hideable_billing_form.slideToggle();
-        })
 
     });
 
