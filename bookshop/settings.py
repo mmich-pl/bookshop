@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_countries',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'star_ratings',
     'django_cleanup.apps.CleanupConfig',
     'core.apps.CoreConfig',
     'books.apps.BooksConfig',
@@ -147,3 +148,6 @@ EMAIL_HOST_PASSWORD = 'proGRESSO12'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
+STAR_RATINGS_RERATE = False
+STAR_RATINGS_ANONYMOUS = False
+STAR_RATINGS_STAR_SPRITE = 'star-ratings/images/new-stars.png'

@@ -1,32 +1,111 @@
 {% extends "core/base.html" %}
+{% load ratings %}
+{% block extra_head %}
+    <style>
+        .star-ratings-rating-average,
+    .star-ratings-rating-value,
+        .star-ratings-rating-count,
+    .star-ratings-rating-user,
+    .star-ratings-errors {
+            display: none;
+        }
+    </style>
+{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-8">
-                <div class="content-section">
-                   <div class="media">
-                       <div class="col-3">
-                           <div class="row">                       <img class="rounded-circle account-img" src="{{ profile.picture.url }}">
-</div>
-                           <div class="row">                       <button class="mx-auto"><a href="{% url 'profile_edit' profile.user.pk %}"><i class="fas fa-user-edit"></i> Edit</a></button>
-</div>
-                       </div>
-                        <div class="media-body">
-                            <div class="row">
-                                <div class="col-11">
-                                    <h2 class="account-heading">{{ profile.first_name|default_if_none:user.username }} {{ profile.last_name|default_if_none:"" }}</h2>
-                                </div>
-                            </div>
-                            <hr>
-                            <p class="text-secondary"><span class="mx-4 my-4"><i class="fas fa-envelope-open-text"></i></span>{{ profile.user.email|default_if_none:"brak danych" }}</p>
-                            <hr>
+
+            <div class="col-12">
+                <div class="row p-4 mt-5">
+                <div class="col-3 text-center">
+                    <img class="rounded-circle account-img" style="max-width: 90%;" src="{{ profile.picture.url }}">
+
+                    <div class="text-center mt-3">
+                        {% ratings profile %}
                     </div>
-                  </div>
+
+                    <ul class=" list-group mt-3 text-center">
+                        <li class="list-group-item text-muted bg-grey">Activity <i class="fas fa-chart-line"></i></li>
+                        <li class="list-group-item text-center"><span class="pull-left"><strong>Offers:</strong></span> {{books.count}}</li>
+                    </ul>
+
+                      <ul class="list-group mt-3 text-center socialMedia">
+                          <li class="list-group-item text-muted bg-grey">Social Media</li>
+                            <li class="list-group-item text-muted">
+                            <a class="fb-ic" href="{{ socialMedia.facebook }}" target="_blank">
+                                <i class="fab fa-facebook-f mr-4"> </i>
+                              </a>
+                            <a class="tw-ic" href="{{ socialMedia.twitter }}" target="_blank">
+                                <i class="fab fa-twitter mr-4"> </i>
+                              </a>
+                              <a class="ins-ic" href="{{ socialMedia.instagram }}" target="_blank">
+                                <i class="fab fa-instagram mr-4"> </i>
+                              </a>
+                          </li>
+                        </ul>
 
                 </div>
+                <div class="col-9" style="margin-top: 10%;">
 
+
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" style="color: #00bfa5;" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+                          </li>
+                        {% if profile.user == user.user %}
+                          <li class="nav-item">
+                            <a class="nav-link" style="color: #00bfa5;" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="home" aria-selected="true">Payment history</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link"  style="color: #00bfa5;" id="edit-profile-tab" data-toggle="tab" href="#edit-profile" role="tab" aria-controls="profile" aria-selected="false">Edit Profile</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" style="color: #00bfa5;" id="edit-address-tab" data-toggle="tab" href="#edit-address" role="tab" aria-controls="contact" aria-selected="false">Edit default Address</a>
+                          </li>
+                            {% else %}
+                            <li class="nav-item">
+                            <a class="nav-link" style="color: #00bfa5;" id="books-tab" data-toggle="tab" href="#books" role="tab" aria-controls="contact" aria-selected="false">Offers</a>
+                          </li>
+                        {% endif %}
+                        </ul>
+                    <div class="tab-content" id="myTabContent">
+                          <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                              {% include 'profiles/includes/profile_main.html' %}
+                          </div>
+                          <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                                {% include 'profiles/includes/transaction_history.html' with payments=payments orders=orders %}
+                          </div>
+                          <div class="tab-pane fade pt-5" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
+                                {% include 'profiles/includes/profile_edition.html' %}
+                                {% include 'profiles/includes/socialmedia_form.html' %}
+                          </div>
+                          <div class="tab-pane fade" id="edit-address" role="tabpanel" aria-labelledby="edit-address-tab">
+                                {% include 'profiles/includes/change_address.html' with form=form %}
+                          </div>
+                        <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="edit-address-tab">
+                                {% include 'profiles/includes/books_list.html' with books=books %}
+                          </div>
+                        </div>
+                </div>
             </div>
         </div>
-    </div>
+            </div>
+        </div>
+
 {% endblock content %}
+
+{% block javascript %}
+    <script>
+
+    $(document).ready(function () {
+        $(".socialMedia a").each(function () {
+            if ($(this).attr('href') === undefined || $(this).attr('href').length < 5){
+                $(this).addClass('disabled text-secondary');
+            }
+        })
+    })
+
+    </script>
+
+{% endblock %}
 

@@ -1,45 +1,98 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.decorators import method_decorator
-from django.views.generic import UpdateView
-from django.urls import reverse_lazy
-from .models import Profile
+from django.views import View
+from core.models import Payment, Order, Address
+from .forms import ProfileForm, SocialMediaForm, AddressForm
+from books.models import Book
+from .models import Profile, SocialMedia
 
 
 @method_decorator(login_required, name='dispatch')
-class ProfileUpdateView(UpdateView):
-    model = Profile
-    template_name = 'profiles/profile_form.html'
-    success_url = reverse_lazy('profile')
-
-    def dispatch(self, request, *args, **kwargs):
-        self.fields = ('first_name', 'last_name', 'birthdate',)
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form, **kwargs):
-        form.instance.email = self.request.user.email
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        pk = self.kwargs.get('pk')
-        return reverse_lazy('profile', kwargs={'pk': pk})
+class ProfileView(View):
 
     def get(self, request, *args, **kwargs):
-        if request.user.id != self.kwargs.get('pk'):
-            raise Http404
-        return super().get(request, *args, **kwargs)
+        try:
+            profile = Profile.objects.get(user=kwargs['pk'])
+            try:
+                socialMedia = SocialMedia.objects.get(user=kwargs['pk'])
+                address = Address.objects.get(user=request.user, default=True)
+
+            except ObjectDoesNotExist:
+                socialMedia = None
+                address = None
+
+            user = Profile.objects.get(user=request.user)
+            form = AddressForm()
+            payments = Payment.objects.filter(user=request.user)
+            orders = Order.objects.filter(user=request.user)
+            books = Book.objects.filter(seller=profile.user)
+            context = {
+                'socialMedia': socialMedia,
+                'profile': profile,
+                'user': user,
+                'form': form,
+                'payments': payments,
+                'orders': orders,
+                'address': address,
+                'books': books,
+            }
+            return render(self.request, 'profiles/profile.html', context)
+        except AttributeError:
+            messages.warning(self.request, "Something went wrong, try again later")
+            return redirect('core:home')
 
     def post(self, request, *args, **kwargs):
         if not request.user.id == self.kwargs.get('pk'):
             raise Http404
-        return super().post(request, *args, **kwargs)
 
-    def test_func(self):
-        return True
+        if 'profile_edit' in request.POST and request.method == 'POST':
+            instance = get_object_or_404(Profile, user=request.user)
+            form = ProfileForm(self.request.POST or None, instance=instance)
+            if form.is_valid():
+                print("sanity check")
+                form.save(commit=False)
+                form.email = request.user.email
+                form.save()
 
+        elif 'address_edit' in request.POST and request.method == 'POST':
 
-@login_required
-def profile(request, pk):
-    profile_data = Profile.objects.get(user=request.user)
-    return render(request, 'profiles/profile.html', {'profile': profile_data,})
+            form = AddressForm(self.request.POST or None)
+            if form.is_valid():
+                address_form_form = form.cleaned_data.get('street_address')
+                apartment_address = form.cleaned_data.get('apartment_address')
+                country = form.cleaned_data.get('country')
+                city = form.cleaned_data.get('city')
+                zip = form.cleaned_data.get('zip')
+                try:
+                    address = Address.objects.get(user=request.user, default=True)
+                    address.user = self.request.user
+                    address.street_address = address_form_form
+                    address.apartment_address = apartment_address
+                    address.country = country
+                    address.city = city
+                    address.zip = zip
+                    address.save()
+
+                except ObjectDoesNotExist:
+                    address = Address(user=self.request.user, street_address=address_form_form,
+                                      apartment_address=apartment_address, country=country, city=city,
+                                      zip=zip, default=True)
+                    address.save()
+            else:
+                messages.warning(self.request, "Please fill in the required fields")
+
+        if 'socialMedia_edit' in request.POST and request.method == 'POST':
+            instance, created = SocialMedia.objects.get_or_create(user=request.user)
+            if created:
+                form = SocialMediaForm(self.request.POST, instance=created)
+                if form.is_valid():
+                    form.save()
+            else:
+                form = SocialMediaForm(self.request.POST, instance=instance)
+                if form.is_valid():
+                    form.save()
+        return redirect('profile', kwargs['pk'])

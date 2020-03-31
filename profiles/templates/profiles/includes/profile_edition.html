@@ -1,0 +1,28 @@
+<form autocomplete="off" method="post" id="profileForm">
+    {% csrf_token %}
+    <table>
+         <div class="md-form mx-auto" style="max-width: 80%;">
+         <label for="id_first_name" class="requiredField">First Name</label>
+         <input type="text" name="first_name" class="form-control" required id="id_first_name" value="{{ profile.first_name }}">
+     </div>
+        <div class="md-form mx-auto" style="max-width: 80%;">
+         <label for="id_last_name" class="requiredField">Last Name</label>
+         <input type="text" name="last_name" class="form-control" required id="id_last_name" value="{{ profile.last_name }}">
+     </div>
+        <div class="md-form mx-auto" style="max-width: 80%;">
+         <label for="id_birthdate" class="requiredField">Birthdate</label>
+         <input type="text" name="birthdate" class="form-control" required id="id_birthdate" value="{{ profile.birthdate|date:"Y-m-d" }}">
+         <small id="hint_id_birthdate" class="form-text teal-text float-left">Correctly date format yyyy-mm-dd</small>
+
+     </div>
+        <div class="md-form mx-auto mt-5" style="max-width: 80%;">
+         <label for="id_phone" class="requiredField">Phone Number</label>
+         <input type="text" name="phone" class="form-control" maxlength="9" required id="id_phone" value="{{ profile.phone }}">
+     </div>
+    </table>
+    <div class="text-center">
+    <button type="submit" name="profile_edit" class="btn btn-teal">Save</button>
+    </div>
+  </form>
+
+

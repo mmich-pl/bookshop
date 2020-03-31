@@ -1,8 +1,6 @@
 ## Django-bookshop
 This application is a simple project created as a project at school.
-
 This is a store with used manuals where logged in users can buy or sell them
-
 
 ### The application includes:
 * complete user profile support
@@ -11,9 +9,6 @@ This is a store with used manuals where logged in users can buy or sell them
 * cart system
 * fully working payment system (stripe)
 * fully working creating sell item views
-
-###### TODO:
-* recreate book create form template
 
 ## Running the Project Locally
 

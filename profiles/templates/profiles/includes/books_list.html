@@ -1,0 +1,42 @@
+{% load static %}
+<div class="mt-4">
+{% for book in books %}
+              {% if book.amount > 0 %}
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card">
+              <div class="view overlay">
+
+
+                {% for photo in book.photos.all %}
+                    {% if forloop.counter == 1  %}
+                        <img class="card-img-top" src="{{ photo.file.url }}">
+                    {% endif %}
+                    {% empty %}
+                        <img class="card-img-top" src="{% static 'core/img/def_book.png' %}">
+                {% endfor %}
+
+
+                <a href="{{ book.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+              <div class="card-body text-center">
+                <a href="" class="grey-text">
+                  <h5>{{ book.get_category_display }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                      <input type="date" class="date" hidden data-book="{{ book.slug }}" value="{{ book.date|date:"Y-m-d" }}">
+                    <a href="{{ book.get_absolute_url }}" class="dark-grey-text">{{ book.title }}
+                    </a>
+                  </strong>
+                </h5>
+                <h4 class="font-weight-bold teal-text">
+                  <small>{{ book.price }} PLN</small>
+                </h4>
+              </div>
+            </div>
+          </div>
+              {% endif %}
+          {% endfor %}
+</div>

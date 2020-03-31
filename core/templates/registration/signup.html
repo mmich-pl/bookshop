@@ -1,8 +1,5 @@
 {% extends 'core/base.html' %}
 {% load crispy_forms_tags %}
-
-
-
 {% block content %}
 
         <form class="text-center border border-light p-5" autocomplete="off" method="post" novalidate style="max-width: 40%; margin: 5% auto;" data-validate-username-or-email-url="{% url 'core:validate_username_or_email' %}">
@@ -22,7 +19,6 @@
             </div>
         {% endfor %}
     {% endif %}
-{#        {{ form }}#}
      <div id="div_id_username" class="md-form">
          <label for="id_username" class="requiredField">Username</label>
          <input type="text" name="username" maxlength="150" class="form-control" required id="id_username">

@@ -25,7 +25,6 @@ class PaymentForm(forms.Form):
 
 
 class CheckoutForm(forms.Form):
-    # TODO: add city field
     street_address = forms.CharField(required=False)
     apartment_address = forms.CharField(required=False)
     country = CountryField(blank_label='(select country)').formfield(

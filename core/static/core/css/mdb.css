@@ -1571,10 +1571,10 @@ a.text-default:hover, a.text-default:focus {
   color: #219287 !important; }
 
 .text-secondary {
-  color: #a6c !important; }
+  color: #7A7A7A !important; }
 
 a.text-secondary:hover, a.text-secondary:focus {
-  color: #9540bf !important; }
+  color: #7A7A7A !important; }
 
 .text-dark {
   color: #212121 !important; }

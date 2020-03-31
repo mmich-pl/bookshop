@@ -14,7 +14,6 @@ from bootstrap_modal_forms.generic import BSModalDeleteView
 from django.conf import settings
 
 
-
 @method_decorator(login_required, name='dispatch')
 class BooksListView(generic.ListView):
     model = Book
