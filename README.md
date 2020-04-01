@@ -9,6 +9,7 @@ This is a store with used manuals where logged in users can buy or sell them
 * cart system
 * fully working payment system (stripe)
 * fully working creating sell item views
+* and a lot more
 
 ## Running the Project Locally
 

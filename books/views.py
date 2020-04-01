@@ -76,7 +76,6 @@ def delete_file(request, pk):
     for file in Photo.objects.filter(id=pk):
         file.delete()
     root = settings.MEDIA_ROOT + '/books_img'
-    print(root)
     folders = list(os.walk(root))[1:]
 
     for folder in folders:

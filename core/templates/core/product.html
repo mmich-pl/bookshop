@@ -78,17 +78,23 @@
             </span></p>
               </div>
               <div class="col-7">
-                  <p><span>Seller: </span><span class="ml-1">{{ object.seller.profile.first_name|default_if_none:object.seller }}
+                  <p><span>Seller: </span>
+                  <a href="{% url 'profile' object.seller.id %}" style="color: #00bfa5;">
+                  <span class="ml-1">{{ object.seller.profile.first_name|default_if_none:object.seller }}
                                                                 {{ object.seller.profile.last_name|default_if_none:"" }}
-                  </span></p>
+                  </span>
+                      </a>
+                  </p>
               </div>
           </div>
                     </li>
         </ul>
+          {% if not request.user == object.seller %}
                 <a id="add_to_cart" href="{{ object.get_add_to_cart_url }}" class="btn btn-teal btn-md my-0 p">
               Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
+          {% endif %}
           </div>
         </div>
       </div>

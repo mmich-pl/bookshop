@@ -1,8 +1,14 @@
+import os
 from django.contrib.auth.models import User
 from django.db import models
-from PIL import Image
 from star_ratings.models import Rating
 from django.contrib.contenttypes.fields import GenericRelation
+
+
+def content_file_name(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.user.username, ext)
+    return os.path.join('profile_img', filename)
 
 
 class Profile(models.Model):
@@ -10,7 +16,6 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=100, null=True)
     last_name = models.CharField(max_length=100, null=True)
     birthdate = models.DateField(null=True, blank=True)
-    picture = models.ImageField(default='default.jpg', upload_to='profile_pics')
     email = models.EmailField(max_length=100, null=True)
     phone = models.CharField(max_length=9, null=True)
     stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
@@ -25,16 +30,6 @@ class Profile(models.Model):
         else:
             return 'User' + ' ' + str(self.user)
 
-    def save(self, **kwargs):
-        super().save()
-
-        img = Image.open(self.picture.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.picture.path)
-
 
 class SocialMedia(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -47,3 +42,9 @@ class SocialMedia(models.Model):
 
     class Meta:
         verbose_name_plural = "SocialMedia"
+
+
+class ProfileImage(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='photo')
+    file = models.ImageField(upload_to=content_file_name)
+    uploaded_at = models.DateTimeField(auto_now_add=True)

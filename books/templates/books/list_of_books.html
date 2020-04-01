@@ -18,7 +18,7 @@
 {% for book in books %}
     <tr>
     <th scope="row">{{ forloop.counter }}</th>
-    <td>{{ book.title }}</td>
+        <td><a href="{% url 'core:product' book.slug %}" style="color: #00bfa5;">{{ book.title }}</a></td>
     <td>
           <!-- Update book buttons -->
       <button type="button" class="update-book btn btn-sm btn-teal">

@@ -103,4 +103,5 @@ ENV/
 .DS_Store
 *.sqlite3
 media/books_img
+media/profile_img
 .idea

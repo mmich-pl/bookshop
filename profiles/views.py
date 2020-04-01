@@ -6,10 +6,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from core.models import Payment, Order, Address
-from .forms import ProfileForm, SocialMediaForm, AddressForm
+from .forms import ProfileForm, SocialMediaForm, AddressForm, ProfileImageForm
 from books.models import Book
-from .models import Profile, SocialMedia
-
+from .models import Profile, SocialMedia, ProfileImage
+from django.conf import settings
+import os
 
 @method_decorator(login_required, name='dispatch')
 class ProfileView(View):
@@ -20,25 +21,30 @@ class ProfileView(View):
             try:
                 socialMedia = SocialMedia.objects.get(user=kwargs['pk'])
                 address = Address.objects.get(user=request.user, default=True)
+                picture = ProfileImage.objects.get(user=profile.user)
 
             except ObjectDoesNotExist:
-                socialMedia = None
-                address = None
+                socialMedia = ''
+                address = ''
+                picture = ''
 
             user = Profile.objects.get(user=request.user)
             form = AddressForm()
             payments = Payment.objects.filter(user=request.user)
             orders = Order.objects.filter(user=request.user)
             books = Book.objects.filter(seller=profile.user)
+            form_profile_image = ProfileImageForm()
             context = {
                 'socialMedia': socialMedia,
                 'profile': profile,
                 'user': user,
                 'form': form,
+                'form_profile_image': form_profile_image,
                 'payments': payments,
                 'orders': orders,
                 'address': address,
                 'books': books,
+                'picture': picture,
             }
             return render(self.request, 'profiles/profile.html', context)
         except AttributeError:
@@ -85,7 +91,7 @@ class ProfileView(View):
             else:
                 messages.warning(self.request, "Please fill in the required fields")
 
-        if 'socialMedia_edit' in request.POST and request.method == 'POST':
+        elif 'socialMedia_edit' in request.POST and request.method == 'POST':
             instance, created = SocialMedia.objects.get_or_create(user=request.user)
             if created:
                 form = SocialMediaForm(self.request.POST, instance=created)
@@ -95,4 +101,18 @@ class ProfileView(View):
                 form = SocialMediaForm(self.request.POST, instance=instance)
                 if form.is_valid():
                     form.save()
+        else:
+            form = ProfileImageForm(request.POST, request.FILES)
+            if form.is_valid():
+                try:
+                    picture = ProfileImage.objects.get(user=request.user)
+                    picture.file.delete()
+                    picture.delete()
+                    form.instance.user = request.user
+                    form.save()
+                    messages.info(request, "If photo doesnt change, please reload the page")
+                except ObjectDoesNotExist:
+                    form.instance.user = request.user
+                    form.save()
+                    messages.info(request, "If photo doesnt change, please reload the page")
         return redirect('profile', kwargs['pk'])
