@@ -1,9 +1,11 @@
 from django.contrib import admin
+
 from .models import OrderBook, Order, Address, Payment
 
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user', 'ordered']
+
 
 class AddressAdmin(admin.ModelAdmin):
     list_display = ['user', 'street_address', 'apartment_address',

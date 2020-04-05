@@ -1,124 +1,102 @@
 {% extends "core/base.html" %}
 {% load static %}
-{% block content %}
-
+{% block extra_head %}
     <style>
-#div_id_condition label, #div_id_category label {
-    margin-top: -40px;
-}
-</style>
+        #div_id_condition label, #div_id_category label {
+            margin-top: -40px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <main class="mt-5 pt-4">
+        <div class="container dark-grey-text mt-5">
+            <div class="row wow fadeIn">
+                <div class="col-6 mb-4">
+                    <div class="text-muted bg-grey text-center"
+                         style="padding-top: 4rem; padding-bottom: 4rem; min-height: 450px; min-width: 450px;">
+                        <span style="font-size: 4rem; margin: auto;"> <i class="fas fa-camera-retro"></i> </span>
+                        <h3>Here will be the photo</h3>
+                    </div>
+                    {% if object.amount == 0 %}
+                        <img src="{% static "core/img/soldOut.png" %}"
+                             style="margin-top: -100%; max-height: 450px; max-width: 450px; position: relative; z-index: 2;">
+                    {% endif %}
+                </div>
+                <div class="col-6 mb-4">
+                    <form method="post" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="p-4">
+                            <div id="div_id_title" class="md-form">
+                                <label for="id_title" class="requiredField">Title</label>
+                                <input type="text" name="title" class="form-control" required id="id_title">
+                            </div>
+                            <div id="div_id_description" class="md-form">
+                                <label for="id_description" class="requiredField">Description</label>
+                                <textarea type="text" name="description" class="form-control md-textarea" required
+                                          id="id_description"></textarea>
+                            </div>
+                            <ul class="list-group list-group-flush mb-5">
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-5">
 
-  <main class="mt-5 pt-4">
-    <div class="container dark-grey-text mt-5">
-      <div class="row wow fadeIn">
-        <div class="col-6 mb-4">
-
-
-                <div class="text-muted bg-grey text-center" style="padding-top: 4rem; padding-bottom: 4rem; min-height: 450px; min-width: 450px;">
-                <span style="font-size: 4rem; margin: auto;"> <i class="fas fa-camera-retro"></i> </span>
-                <h3>Here will be the photo</h3>
-              </div>
-
-
-        {% if object.amount == 0 %}
-           <img src="{% static "core/img/soldOut.png" %}" style="margin-top: -100%; max-height: 450px; max-width: 450px; position: relative; z-index: 2;">
-        {% endif %}
+                                            <div id="div_id_author" class="md-form">
+                                                <label for="id_author" class="requiredField">Author</label>
+                                                <input type="text" name="author" class="form-control" required
+                                                       id="id_author">
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div id="div_id_publisher" class="md-form">
+                                                <label for="id_publisher" class="requiredField">Publisher</label>
+                                                <input type="text" name="publisher" class="form-control" required
+                                                       id="id_publisher">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div id="div_id_category" class="md-form">
+                                                <label for="id_category" class="requiredField">Category</label>
+                                                {{ form.category }}
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div id="div_id_condition" class="md-form">
+                                                <label for="id_condition" class="requiredField">Condition</label>
+                                                {{ form.condition }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div id="div_id_amount" class="md-form">
+                                                <label for="id_amount" class="requiredField">Amount</label>
+                                                <input type="number" name="amount" class="form-control" min="0" required
+                                                       id="id_amount">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div id="div_id_price" class="md-form">
+                                                <label for="id_price" class="requiredField">Price</label>
+                                                <input type="number" name="price" class="form-control" min="0" required
+                                                       id="id_price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button type="submit" class="btn btn-teal">Next</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="col-6 mb-4">
-                <form method="post" action="" enctype="multipart/form-data">
-  {% csrf_token %}
-          <div class="p-4">
-
-
-     <div id="div_id_title" class="md-form">
-         <label for="id_title" class="requiredField">Title</label>
-         <input type="text" name="title" class="form-control" required id="id_title">
-     </div>
-      <div id="div_id_description" class="md-form">
-         <label for="id_description" class="requiredField">Description</label>
-          <textarea type="text" name="description" class="form-control md-textarea" required id="id_description"></textarea>
-     </div>
-
-
-          <ul class="list-group list-group-flush mb-5">
-                            <li class="list-group-item">
-
-          <div class="row">
-              <div class="col-5">
-
-          <div id="div_id_author" class="md-form">
-             <label for="id_author" class="requiredField">Author</label>
-             <input type="text" name="author" class="form-control" required id="id_author">
-          </div>
-              </div>
-
-              <div class="col-7">
-                <div id="div_id_publisher" class="md-form">
-                <label for="id_publisher" class="requiredField">Publisher</label>
-                <input type="text" name="publisher" class="form-control" required id="id_publisher">
-              </div>
-          </div>
-
-
-          </div>
-                    </li>
-              <li class="list-group-item">
-
-          <div class="row">
-
-
-              <div class="col-6">
-                   <div id="div_id_category" class="md-form">
-                <label for="id_category" class="requiredField">Category</label>
-                {{ form.category }}
-              </div>
-
-
-              </div>
-
-
-
-              <div class="col-6">
-                  <div id="div_id_condition" class="md-form">
-                <label for="id_condition" class="requiredField">Condition</label>
-                {{ form.condition }}
-              </div>
-              </div>
-
-          </div>
-                    </li>
-              <li class="list-group-item">
-
-          <div class="row">
-              <div class="col-6">
- <div id="div_id_amount" class="md-form">
-                <label for="id_amount" class="requiredField">Amount</label>
-                <input type="number" name="amount" class="form-control" min="0" required id="id_amount">
-              </div>
-              </div>
-              <div class="col-6">
-
- <div id="div_id_price" class="md-form">
-                <label for="id_price" class="requiredField">Price</label>
-                <input type="number" name="price" class="form-control" min="0" required id="id_price">
-              </div>
-
-              </div>
-          </div>
-                    </li>
-        </ul>
-                      <button type="submit" class="btn btn-teal">Next</button>
-
-          </div>
-        </form>
-
-        </div>
-      </div>
-    </div>
-  </main>
-
-
-
+    </main>
 {% endblock content %}
 
 

@@ -1,65 +1,58 @@
-
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Bookshop | Collegium Gostomianum</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Bookshop | Collegium Gostomianum</title>
     {% block extra_head %}{% endblock %}
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-  <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'core/css/mdb.css' %}" rel="stylesheet">
-  <link href="{% static 'core/css/owl.carousel.min.css' %}" rel="stylesheet">
-  <link href="{% static 'core/css/animate.css' %}" rel="stylesheet">
-  <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
-     <style type="text/css">
-    html, body, header, .carousel {
-      height: 60vh;
-    }
-
-    @media (max-width: 740px) {
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/mdb.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+    <style type="text/css">
         html, body, header, .carousel {
-        height: 100vh;
-      }
-    }
-
-    @media (min-width: 800px) and (max-width: 850px) {
-        html, body, header, .carousel {
-        height: 100vh;
-      }
-    }
-
-  </style>
+            height: 60vh;
+        }
+        @media (max-width: 740px) {
+            html, body, header, .carousel {
+                height: 100vh;
+            }
+        }
+        @media (min-width: 800px) and (max-width: 850px) {
+            html, body, header, .carousel {
+                height: 100vh;
+            }
+        }
+    </style>
 </head>
-
 {% include "core/includes/navbar.html" %}
-
 <body>
 <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content"></div>
-  </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
 </div>
 <div class="container mt-5 pt-4">
-  {% if messages %}
+    {% if messages %}
         {% for message in messages %}
-          <div class="my-5 alert alert-{{ message.tags }}">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message|safe }}
-          </div>
+            <div class="my-5 alert alert-{{ message.tags }}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message|safe }}
+            </div>
         {% endfor %}
-  {% endif %}
+    {% endif %}
 </div>
-    {% block content %}
-    {% endblock content %}
-
-    {% include "core/includes/footer.html" %}
-    {% include "core/includes/scripts.html" %}
-    {% block javascript %}{% endblock %}
+{% block content %}
+{% endblock content %}
+{% include "core/includes/footer.html" %}
+{% include "core/includes/scripts.html" %}
+{% block javascript %}{% endblock %}
 </body>
 </html>

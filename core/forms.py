@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
-
 PAYMENT_CHOICES = (
     ('S', 'Stripe'),
 )
@@ -29,7 +28,7 @@ class CheckoutForm(forms.Form):
     apartment_address = forms.CharField(required=False)
     country = CountryField(blank_label='(select country)').formfield(
         required=False,
-        widget=CountrySelectWidget(attrs={'class': 'custom-select d-block w-100',}))
+        widget=CountrySelectWidget(attrs={'class': 'custom-select d-block w-100', }))
     city = forms.CharField(required=False)
     zip = forms.CharField(required=False)
 

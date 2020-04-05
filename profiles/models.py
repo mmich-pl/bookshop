@@ -1,8 +1,9 @@
 import os
+
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from star_ratings.models import Rating
-from django.contrib.contenttypes.fields import GenericRelation
 
 
 def content_file_name(instance, filename):

@@ -1,20 +1,23 @@
 <form autocomplete="off" method="post" id="socialMediaForm">
     {% csrf_token %}
     <table>
-         <div class="md-form mx-auto" style="max-width: 80%;">
-         <label for="id_facebook" class="requiredField">facebook</label>
-         <input type="url" name="facebook" class="form-control" required id="id_facebook" value="{{ socialMedia.facebook }}">
-     </div>
         <div class="md-form mx-auto" style="max-width: 80%;">
-         <label for="id_twiter" class="requiredField">twiter</label>
-         <input type="url" name="twiter" class="form-control" id="id_twiter" value="{{ socialMedia.twiter|default:'' }}">
-     </div>
-            <div class="md-form mx-auto" style="max-width: 80%;">
-         <label for="id_instagram" class="requiredField">instagram</label>
-         <input type="url" name="instagram" class="form-control" id="id_instagram" value="{{ socialMedia.instagram|default:'' }}">
-     </div>
+            <label for="id_facebook" class="requiredField">facebook</label>
+            <input type="url" name="facebook" class="form-control" required id="id_facebook"
+                   value="{{ socialMedia.facebook }}">
+        </div>
+        <div class="md-form mx-auto" style="max-width: 80%;">
+            <label for="id_twiter" class="requiredField">twiter</label>
+            <input type="url" name="twiter" class="form-control" id="id_twiter"
+                   value="{{ socialMedia.twiter|default:'' }}">
+        </div>
+        <div class="md-form mx-auto" style="max-width: 80%;">
+            <label for="id_instagram" class="requiredField">instagram</label>
+            <input type="url" name="instagram" class="form-control" id="id_instagram"
+                   value="{{ socialMedia.instagram|default:'' }}">
+        </div>
     </table>
     <div class="text-center">
-    <button type="submit" name="socialMedia_edit" class="btn btn-teal">Save</button>
+        <button type="submit" name="socialMedia_edit" class="btn btn-teal">Save</button>
     </div>
-  </form>
+</form>

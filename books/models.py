@@ -1,12 +1,12 @@
+import os
+from os.path import join as path_join, isfile
+from random import choice
+
+from PIL import Image
 from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import reverse
 from django.utils import timezone
-from PIL import Image
-from random import choice
-from os.path import join as path_join, isfile
-import os
-
 
 CATEGORY_CHOICES = (
     ('Chemistry', 'Chemistry'),

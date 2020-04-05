@@ -9,35 +9,34 @@
         </thead>
         <tbody>
         {% for payment in payments.all %}
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>{{ payment.amount }} PLN</td>
-            <td>{{ payment.timestamp }}</td>
-            <td><a data-toggle="collapse" href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapse"><i class="fas fa-caret-down"></i></a></td>
-        </tr>
             <tr>
-             <td colspan='4'>
-            <div class="collapse" id="collapse-{{ forloop.counter }}">
-                {% for order in orders.all %}
-                    {% if order.ordered_date.date == payment.timestamp.date %}
-                        {% for book in order.books.all %}
-                            <ul>
-                            <li>{{ book }}</li>
-                            </ul>
-
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ payment.amount }} PLN</td>
+                <td>{{ payment.timestamp }}</td>
+                <td><a data-toggle="collapse" href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false"
+                       aria-controls="collapse"><i class="fas fa-caret-down"></i></a></td>
+            </tr>
+            <tr>
+                <td colspan='4'>
+                    <div class="collapse" id="collapse-{{ forloop.counter }}">
+                        {% for order in orders.all %}
+                            {% if order.ordered_date.date == payment.timestamp.date %}
+                                {% for book in order.books.all %}
+                                    <ul>
+                                        <li>{{ book }}</li>
+                                    </ul>
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
-                    {% endif %}
-                {% endfor %}
-
-            </div>
-            </td>
+                    </div>
+                </td>
             </tr>
         {% empty %}
-         <tr>
-            <td colspan='3' class="text-center">Your payment history is empty.</td>
-        </tr>
+            <tr>
+                <td colspan='3' class="text-center">Your payment history is empty.</td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    </div>
+</div>

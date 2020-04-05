@@ -1,60 +1,47 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
-<div class="container">
-    <button class="btn btn-teal" type="button" name="button"><a href="{% url 'books:create_book' %}" style="color: white;">Create book</a></button>
-
-    <div class="table-responsive text-nowrap">
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-{% for book in books %}
-    <tr>
-    <th scope="row">{{ forloop.counter }}</th>
-        <td><a href="{% url 'core:product' book.slug %}" style="color: #00bfa5;">{{ book.title }}</a></td>
-    <td>
-          <!-- Update book buttons -->
-      <button type="button" class="update-book btn btn-sm btn-teal">
-          <a href="{% url 'books:update_book' book.slug %}" style="color: white;">
-              <span class="fas fa-pen"></span></a>
-      </button>
-      <!-- Delete book buttons -->
-      <button type="button" class="delete-book btn btn-sm btn-danger" data-id="{% url 'books:delete_book' book.slug %}">
-        <span class="fa fa-trash"></span>
-      </button>
-
-    </td>
-    </tr>
-{% endfor %}
-
-    </tbody>
-  </table>
-
-</div>
-</div>
-
-
-
+    <div class="container">
+        <button class="btn btn-teal" type="button" name="button"><a href="{% url 'books:create_book' %}"
+                                                                    style="color: white;">Create book</a></button>
+        <div class="table-responsive text-nowrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td><a href="{% url 'core:product' book.slug %}" style="color: #00bfa5;">{{ book.title }}</a>
+                        </td>
+                        <td>
+                            <button type="button" class="update-book btn btn-sm btn-teal">
+                                <a href="{% url 'books:update_book' book.slug %}" style="color: white;">
+                                    <span class="fas fa-pen"></span></a>
+                            </button>
+                            <button type="button" class="delete-book btn btn-sm btn-danger"
+                                    data-id="{% url 'books:delete_book' book.slug %}">
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
-
 {% block javascript %}
+    <script type="text/javascript">
+        $(function () {
+            $(".delete-book").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
 
-<script type="text/javascript">
-  $(function () {
-
-    // Delete book buttons
-    $(".delete-book").each(function () {
-      $(this).modalForm({formURL: $(this).data('id')});
-    });
-
-  });
-</script>
-
+        });
+    </script>
 {% endblock %}

@@ -2,47 +2,53 @@
 html,
 body,
 .view {
-  height: 100%; }
+    height: 100%;
+}
 
 body {
-  background-color: white;
+    background-color: white;
 }
 
 /* Half Page Carousel itself*/
 .carousel {
-  height: 50%; }
-  .carousel .carousel-inner {
-    height: 100%; }
-    .carousel .carousel-inner .carousel-item,
-    .carousel .carousel-inner .active {
-      height: 100%; }
+    height: 50%;
+}
+
+.carousel .carousel-inner {
+    height: 100%;
+}
+
+.carousel .carousel-inner .carousel-item,
+.carousel .carousel-inner .active {
+    height: 100%;
+}
 
 /* Adjustment for mobile devices*/
 @media (max-width: 776px) {
-  .carousel {
-    height: 100%; } }
+    .carousel {
+        height: 100%;
+    }
+}
 
 /* Footer color for sake of consistency with Navbar */
 .page-footer {
-  background-color: #929FBA; }
-
-
-::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
+    background-color: #929FBA;
 }
 
-::-webkit-scrollbar
-{
-	width: 12px;
-	background-color: #F5F5F5;
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #00bfa5;
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #00bfa5;
 }

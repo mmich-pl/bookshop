@@ -1,45 +1,45 @@
 {% load crispy_forms_tags %}
 
 <form class="border border-light p-5" autocomplete="off" method="POST">
-              {% csrf_token %}
-            {{ form.errors }}
-            {{ form.non_field_errors }}
-
-                <div class="hideable_form">
-                    <div class="row">
-              <div class="md-form mb-5 col-8">
-                <input type="text" name="street_address" id="street_address" class="form-control" value="{{ address.street_address|default:'' }}">
+    {% csrf_token %}
+    {{ form.errors }}
+    {{ form.non_field_errors }}
+    <div class="hideable_form">
+        <div class="row">
+            <div class="md-form mb-5 col-8">
+                <input type="text" name="street_address" id="street_address" class="form-control"
+                       value="{{ address.street_address|default:'' }}">
                 <label for="street_address" class="ml-3">Street Address</label>
-              </div>
-              <div class="md-form mb-5 col-4">
-                <input type="text" name="apartment_address" id="apartment_address" class="form-control" value="{{ address.apartment_address|default:'' }}">
+            </div>
+            <div class="md-form mb-5 col-4">
+                <input type="text" name="apartment_address" id="apartment_address" class="form-control"
+                       value="{{ address.apartment_address|default:'' }}">
                 <label for="apartment_address" class="ml-3">Apartment Address </label>
-              </div>
-                    </div>
-
-              <div class="row">
-                <div class=" col-lg-4 col-md-12 mb-4">
-                  <label for="country">Country</label>
-                  {{ form.country }}
-                  <div class="invalid-feedback">
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-lg-4 col-md-12 mb-4">
+                <label for="country">Country</label>
+                {{ form.country }}
+                <div class="invalid-feedback">
                     Please select a valid country.
-                  </div>
                 </div>
-                <div class="md-form col-lg-4 mb-4">
-                  <label for="city" class="ml-3"> City</label>
-                  <input type="text" name="city" id="city" class="form-control" value="{{ address.city|default:'' }}">
-                  <div class="invalid-feedback">
+            </div>
+            <div class="md-form col-lg-4 mb-4">
+                <label for="city" class="ml-3"> City</label>
+                <input type="text" name="city" id="city" class="form-control" value="{{ address.city|default:'' }}">
+                <div class="invalid-feedback">
                     City required.
-                  </div>
                 </div>
-                  <div class="md-form col-lg-4 mb-4">
-                  <label for="zip" class="ml-3"> Code</label>
-                  <input type="text" name="zip" id="zip" class="form-control" value="{{ address.zip|default:'' }}">
-                  <div class="invalid-feedback">
+            </div>
+            <div class="md-form col-lg-4 mb-4">
+                <label for="zip" class="ml-3"> Code</label>
+                <input type="text" name="zip" id="zip" class="form-control" value="{{ address.zip|default:'' }}">
+                <div class="invalid-feedback">
                     Zip code required.
-                  </div>
                 </div>
-              </div>
-                </div>
-            <button type="submit" name="address_edit" class="btn btn-teal">Save</button>
-            </form>
+            </div>
+        </div>
+    </div>
+    <button type="submit" name="address_edit" class="btn btn-teal">Save</button>
+</form>

@@ -5,12 +5,12 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
+
+from books.models import Book
 from core.models import Payment, Order, Address
 from .forms import ProfileForm, SocialMediaForm, AddressForm, ProfileImageForm
-from books.models import Book
 from .models import Profile, SocialMedia, ProfileImage
-from django.conf import settings
-import os
+
 
 @method_decorator(login_required, name='dispatch')
 class ProfileView(View):

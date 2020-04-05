@@ -3,300 +3,297 @@
 {% load static %}
 {% block javascript %}
     <script>
+        $(document).ready(function () {
+            $(".socialMedia a").each(function () {
+                if ($(this).attr('href') === undefined || $(this).attr('href').length < 5) {
+                    $(this).addClass('disabled text-secondary');
+                }
+            });
 
-    $(document).ready(function () {
-        $(".socialMedia a").each(function () {
-            if ($(this).attr('href') === undefined || $(this).attr('href').length < 5){
-                $(this).addClass('disabled text-secondary');
-            }
         });
 
-    });
+        $(function () {
+            $("#id_file").change(function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#image").attr("src", e.target.result);
+                        $("#modalCrop").modal("show");
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
 
-    $(function () {
+            var $image = $("#image");
+            var cropBoxData;
+            var canvasData;
+            $("#modalCrop").on("shown.bs.modal", function () {
+                $image.cropper({
+                    viewMode: 1,
+                    aspectRatio: 1 / 1,
+                    minContainerWidth: 200,
+                    minContainerHeight: 200,
+                    ready: function () {
+                        $image.cropper("setCanvasData", canvasData);
+                        $image.cropper("setCropBoxData", cropBoxData);
+                    }
+                });
+            }).on("hidden.bs.modal", function () {
+                cropBoxData = $image.cropper("getCropBoxData");
+                canvasData = $image.cropper("getCanvasData");
+                $image.cropper("destroy");
+            });
 
-      /* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
-      $("#id_file").change(function () {
-        if (this.files && this.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            $("#image").attr("src", e.target.result);
-            $("#modalCrop").modal("show");
-          };
-          reader.readAsDataURL(this.files[0]);
-        }
-      });
+            $(".js-zoom-in").click(function () {
+                $image.cropper("zoom", 0.1);
+            });
 
-      /* SCRIPTS TO HANDLE THE CROPPER BOX */
-      var $image = $("#image");
-      var cropBoxData;
-      var canvasData;
-      $("#modalCrop").on("shown.bs.modal", function () {
-        $image.cropper({
-          viewMode: 1,
-          aspectRatio: 1/1,
-            minContainerWidth: 200,
-            minContainerHeight: 200,
-          ready: function () {
-            $image.cropper("setCanvasData", canvasData);
-            $image.cropper("setCropBoxData", cropBoxData);
-          }
+            $(".js-zoom-out").click(function () {
+                $image.cropper("zoom", -0.1);
+            });
+
+            $(".js-crop-and-upload").click(function () {
+                var cropData = $image.cropper("getData");
+                $("#id_x").val(cropData["x"]);
+                $("#id_y").val(cropData["y"]);
+                $("#id_height").val(cropData["height"]);
+                $("#id_width").val(cropData["width"]);
+                $("#formUpload").submit();
+            });
         });
-      }).on("hidden.bs.modal", function () {
-        cropBoxData = $image.cropper("getCropBoxData");
-        canvasData = $image.cropper("getCanvasData");
-        $image.cropper("destroy");
-      });
-
-      $(".js-zoom-in").click(function () {
-        $image.cropper("zoom", 0.1);
-      });
-
-      $(".js-zoom-out").click(function () {
-        $image.cropper("zoom", -0.1);
-      });
-
-      /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
-      $(".js-crop-and-upload").click(function () {
-        var cropData = $image.cropper("getData");
-        $("#id_x").val(cropData["x"]);
-        $("#id_y").val(cropData["y"]);
-        $("#id_height").val(cropData["height"]);
-        $("#id_width").val(cropData["width"]);
-        $("#formUpload").submit();
-      });
-
-    });
-
     </script>
-
 {% endblock %}
 
 {% block extra_head %}
     <style>
         .star-ratings-rating-average,
-    .star-ratings-rating-value,
+        .star-ratings-rating-value,
         .star-ratings-rating-count,
-    .star-ratings-rating-user,
-    .star-ratings-errors {
+        .star-ratings-rating-user,
+        .star-ratings-errors {
             display: none;
         }
-.cropper {
-max-width: 100%;
-}
 
-div.cropper-container{
-    max-width: 100%;
-    max-height: 95%;
-}
+        .cropper {
+            max-width: 100%;
+        }
 
-.container-image {
-  position: relative;
-}
+        div.cropper-container {
+            max-width: 100%;
+            max-height: 95%;
+        }
 
-img {
-  max-width: 100%;
-  max-height: 100%;
-}
+        .container-image {
+            position: relative;
+        }
 
-img.image {
-  opacity: 1;
-  display: block;
-cursor: pointer;
-margin-left: auto;
-margin-right: auto;
-  transition: .5s ease;
-  backface-visibility: hidden;
-}
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
 
-.middle {
-  transition: .5s ease;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  text-align: center;
-}
+        img.image {
+            opacity: 1;
+            display: block;
+            cursor: pointer;
+            margin-left: auto;
+            margin-right: auto;
+            transition: .5s ease;
+            backface-visibility: hidden;
+        }
 
-.container-image:hover .image {
-  opacity: 0.3;
-}
+        .middle {
+            transition: .5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+        }
 
-.container-image:hover .middle {
-  opacity: 1;
-}
+        .container-image:hover .image {
+            opacity: 0.3;
+        }
 
-.modal-content {
-    position: absolute;
-   left: 50%;
-   top: 50%;
-    transform: translate(-50%, 0%);
-    height: auto;
-    min-width: 750px;
-}
-[type="file"] {
-  height: 0;
-  overflow: hidden;
-  width: 0;
-}
+        .container-image:hover .middle {
+            opacity: 1;
+        }
 
-label[for=id_file] {
-   cursor: pointer;
-    width: 200px;
-  color: inherit;
-  text-transform: uppercase;
-  word-wrap: break-word;
-  white-space: normal;
-  cursor: pointer;
-  border: 0;
-  border-radius: 0.125rem;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  padding: 0.84rem 2.14rem;
-  font-size: 0.81rem;
-    color: #fff;
-background-color: #00bfa5;
-}
+        .modal-content {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, 0%);
+            height: auto;
+            min-width: 750px;
+        }
 
-#id_file {
-   opacity: 0;
-   position: absolute;
-   z-index: -1;
-    display: inline-block;
+        [type="file"] {
+            height: 0;
+            overflow: hidden;
+            width: 0;
+        }
 
-}
+        label[for=id_file] {
+            cursor: pointer;
+            width: 200px;
+            color: inherit;
+            text-transform: uppercase;
+            word-wrap: break-word;
+            white-space: normal;
+            cursor: pointer;
+            border: 0;
+            border-radius: 0.125rem;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            padding: 0.84rem 2.14rem;
+            font-size: 0.81rem;
+            color: #fff;
+            background-color: #00bfa5;
+        }
 
+        #id_file {
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+            display: inline-block;
 
-
+        }
 
     </style>
 {% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
-
             <div class="col-12">
                 <div class="row p-4 mt-5">
-                <div class="col-3 ">
-                    <div class="container-image text-center">
-                        {% if picture %}
-                        <img class="rounded-circle image" src="{{ picture.file.url }}">
-                        {% else %}
-                        <img class="rounded-circle image" src="{% static 'core/img/default.jpg' %}">
-                        {% endif %}
-                        <div class="middle">
-<form method="post" enctype="multipart/form-data" id="formUpload">
-    {% csrf_token %}
-       {{form_profile_image}}
-</form>
-
-
-
-                      </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        {% ratings profile %}
-                    </div>
-
-                    <ul class=" list-group mt-3 text-center">
-                        <li class="list-group-item text-muted bg-grey">Activity <i class="fas fa-chart-line"></i></li>
-                        <li class="list-group-item text-center"><span class="pull-left"><strong>Offers:</strong></span> {{books.count}}</li>
-                    </ul>
-
-                      <ul class="list-group mt-3 text-center socialMedia">
-                          <li class="list-group-item text-muted bg-grey">Social Media</li>
-                            <li class="list-group-item text-muted">
-                            <a class="fb-ic" href="{{ socialMedia.facebook }}" target="_blank" style="color: #00bfa5;">
-                                <i class="fab fa-facebook-f mr-4"> </i>
-                              </a>
-                            <a class="tw-ic" href="{{ socialMedia.twitter }}" target="_blank" style="color: #00bfa5;">
-                                <i class="fab fa-twitter mr-4"> </i>
-                              </a>
-                              <a class="ins-ic" href="{{ socialMedia.instagram }}" target="_blank" style="color: #00bfa5;">
-                                <i class="fab fa-instagram mr-4"> </i>
-                              </a>
-                          </li>
-                        </ul>
-
-                </div>
-                <div class="col-9" style="margin-top: 10%;">
-
-
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                          <li class="nav-item">
-                            <a class="nav-link active" style="color: #00bfa5;" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="home" aria-selected="true">Profile</a>
-                          </li>
-                        {% if profile.user == user.user %}
-                          <li class="nav-item">
-                            <a class="nav-link" style="color: #00bfa5;" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="home" aria-selected="true">Payment history</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link"  style="color: #00bfa5;" id="edit-profile-tab" data-toggle="tab" href="#edit-profile" role="tab" aria-controls="profile" aria-selected="false">Edit Profile</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" style="color: #00bfa5;" id="edit-address-tab" data-toggle="tab" href="#edit-address" role="tab" aria-controls="contact" aria-selected="false">Edit default Address</a>
-                          </li>
+                    <div class="col-3 ">
+                        <div class="container-image text-center">
+                            {% if picture %}
+                                <img class="rounded-circle image" src="{{ picture.file.url }}">
                             {% else %}
-                            <li class="nav-item">
-                            <a class="nav-link" style="color: #00bfa5;" id="books-tab" data-toggle="tab" href="#books" role="tab" aria-controls="contact" aria-selected="false">Offers</a>
-                          </li>
-                        {% endif %}
-                        </ul>
-                    <div class="tab-content" id="myTabContent">
-                          <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                              {% include 'profiles/includes/profile_main.html' %}
-                          </div>
-                          <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                                {% include 'profiles/includes/transaction_history.html' with payments=payments orders=orders %}
-                          </div>
-                          <div class="tab-pane fade pt-5" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
-                              <div class="row">
-                                  <div class="col-6" style="border-right: 1px solid #7A7A7A;">{% include 'profiles/includes/profile_edition.html' %}</div>
-                                  <div class="col-6">{% include 'profiles/includes/socialmedia_form.html' %}</div>
-                              </div>
-                          </div>
-                          <div class="tab-pane fade" id="edit-address" role="tabpanel" aria-labelledby="edit-address-tab">
-                                {% include 'profiles/includes/change_address.html' with form=form %}
-                          </div>
-                        <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="edit-address-tab">
-                                {% include 'profiles/includes/books_list.html' with books=books %}
-                          </div>
+                                <img class="rounded-circle image" src="{% static 'core/img/default.jpg' %}">
+                            {% endif %}
+                            <div class="middle">
+                                <form method="post" enctype="multipart/form-data" id="formUpload">
+                                    {% csrf_token %}
+                                    {{ form_profile_image }}
+                                </form>
+                            </div>
                         </div>
+                        <div class="text-center mt-3">
+                            {% ratings profile %}
+                        </div>
+                        <ul class=" list-group mt-3 text-center">
+                            <li class="list-group-item text-muted bg-grey">Activity <i class="fas fa-chart-line"></i>
+                            </li>
+                            <li class="list-group-item text-center"><span
+                                    class="pull-left"><strong>Offers:</strong></span> {{ books.count }}</li>
+                        </ul>
+                        <ul class="list-group mt-3 text-center socialMedia">
+                            <li class="list-group-item text-muted bg-grey">Social Media</li>
+                            <li class="list-group-item text-muted">
+                                <a class="fb-ic" href="{{ socialMedia.facebook }}" target="_blank"
+                                   style="color: #00bfa5;">
+                                    <i class="fab fa-facebook-f mr-4"> </i>
+                                </a>
+                                <a class="tw-ic" href="{{ socialMedia.twitter }}" target="_blank"
+                                   style="color: #00bfa5;">
+                                    <i class="fab fa-twitter mr-4"> </i>
+                                </a>
+                                <a class="ins-ic" href="{{ socialMedia.instagram }}" target="_blank"
+                                   style="color: #00bfa5;">
+                                    <i class="fab fa-instagram mr-4"> </i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-9" style="margin-top: 10%;">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" style="color: #00bfa5;" id="profile-tab" data-toggle="tab"
+                                   href="#profile" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+                            </li>
+                            {% if profile.user == user.user %}
+                                <li class="nav-item">
+                                    <a class="nav-link" style="color: #00bfa5;" id="history-tab" data-toggle="tab"
+                                       href="#history" role="tab" aria-controls="home" aria-selected="true">Payment
+                                        history</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" style="color: #00bfa5;" id="edit-profile-tab" data-toggle="tab"
+                                       href="#edit-profile" role="tab" aria-controls="profile" aria-selected="false">Edit
+                                        Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" style="color: #00bfa5;" id="edit-address-tab" data-toggle="tab"
+                                       href="#edit-address" role="tab" aria-controls="contact" aria-selected="false">Edit
+                                        default Address</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" style="color: #00bfa5;" id="books-tab" data-toggle="tab"
+                                       href="#books" role="tab" aria-controls="contact" aria-selected="false">Offers</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="profile" role="tabpanel"
+                                 aria-labelledby="profile-tab">
+                                {% include 'profiles/includes/profile_main.html' %}
+                            </div>
+                            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                                {% include 'profiles/includes/transaction_history.html' with payments=payments orders=orders %}
+                            </div>
+                            <div class="tab-pane fade pt-5" id="edit-profile" role="tabpanel"
+                                 aria-labelledby="edit-profile-tab">
+                                <div class="row">
+                                    <div class="col-6"
+                                         style="border-right: 1px solid #7A7A7A;">{% include 'profiles/includes/profile_edition.html' %}</div>
+                                    <div class="col-6">{% include 'profiles/includes/socialmedia_form.html' %}</div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="edit-address" role="tabpanel"
+                                 aria-labelledby="edit-address-tab">
+                                {% include 'profiles/includes/change_address.html' with form=form %}
+                            </div>
+                            <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="edit-address-tab">
+                                {% include 'profiles/includes/books_list.html' with books=books %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="modal fade" id="modalCrop">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img src="" id="image">
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group pull-left" role="group">
+                        <button type="button" class="btn btn-default js-zoom-in">
+                            <span><i class="fas fa-plus"></i></span>
+                        </button>
+                        <button type="button" class="btn btn-default js-zoom-out">
+                            <span><i class="fas fa-minus"></i></span>
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-elegant" data-dismiss="modal">Nevermind</button>
+                    <button type="button" class="btn btn-default js-crop-and-upload">Crop and upload</button>
+                </div>
             </div>
         </div>
-
-      <div class="modal fade" id="modalCrop">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <img src="" id="image">
-        </div>
-        <div class="modal-footer">
-          <div class="btn-group pull-left" role="group">
-            <button type="button" class="btn btn-default js-zoom-in">
-              <span><i class="fas fa-plus"></i></span>
-            </button>
-            <button type="button" class="btn btn-default js-zoom-out">
-              <span><i class="fas fa-minus"></i></span>
-            </button>
-          </div>
-          <button type="button" class="btn btn-elegant" data-dismiss="modal">Nevermind</button>
-          <button type="button" class="btn btn-default js-crop-and-upload">Crop and upload</button>
-        </div>
-      </div>
     </div>
-  </div>
-
 {% endblock content %}
 
 

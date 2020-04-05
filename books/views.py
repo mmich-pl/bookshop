@@ -1,5 +1,8 @@
-import time
 import os
+import time
+
+from bootstrap_modal_forms.generic import BSModalDeleteView
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse, HttpResponseRedirect
@@ -8,10 +11,9 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic, View
 from django.views.generic import CreateView, UpdateView
+
 from .forms import BookForm, PhotoForm
 from .models import Book, Photo
-from bootstrap_modal_forms.generic import BSModalDeleteView
-from django.conf import settings
 
 
 @method_decorator(login_required, name='dispatch')

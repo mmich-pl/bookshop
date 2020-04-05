@@ -1,32 +1,34 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
-from django.views.generic import CreateView, DetailView, View
-from .forms import SignUpForm, CheckoutForm, PaymentForm
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
-from .models import OrderBook, Order, Address, Payment
-from profiles.models import Profile
-from books.models import Book, Photo
-from .tokens import account_activation_token
-from django.contrib.auth.models import User
-from django.core.mail import EmailMessage
-from django.contrib.auth import login
-from django.shortcuts import redirect
-from django.contrib import messages
-from .decorators import anonymous_required
-from django.utils.decorators import method_decorator
-from django.db.models import Q, Count
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.exceptions import ObjectDoesNotExist
-from datetime import datetime, timedelta
-from django.conf import settings
 import json
+from datetime import datetime, timedelta
 
 import stripe
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMessage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q, Count
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.generic import CreateView, DetailView, View
+
+from books.models import Book, Photo
+from profiles.models import Profile
+from .decorators import anonymous_required
+from .forms import SignUpForm, CheckoutForm, PaymentForm
+from .models import OrderBook, Order, Address, Payment
+from .tokens import account_activation_token
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -376,7 +378,7 @@ class PaymentView(View):
                     customer.sources.create(source=token)
 
                 else:
-                    customer = stripe.Customer.create(email=self.request.user.email,)
+                    customer = stripe.Customer.create(email=self.request.user.email, )
                     customer.sources.create(source=token)
                     user_profile.stripe_customer_id = customer['id']
                     user_profile.one_click_purchasing = True

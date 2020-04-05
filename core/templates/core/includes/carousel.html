@@ -1,41 +1,43 @@
 <div class="mx-auto border border-light my-3 p-2" style="max-width: 98%;">
-<div class="text-center row my-3">
+    <div class="text-center row my-3">
         <p class="h4 mx-auto text-uppercase">{{ title }}</p>
-</div>
-<div class="owl-carousel carousel owl-theme" >
-  {% for book in items %}
-    <div class="item p-1">
-            <div class="card">
-              <div class="view overlay">
-                    {% for photo in book.photos.all %}
-                    {% if forloop.counter == 1  %}
-                        <img class="card-img-top" src="{{ photo.file.url }}">
-                    {% endif %}
-                    {% empty %}
-                        <img class="card-img-top" src="{% static 'core/img/def_book.png' %}">
-                {% endfor %}
-                <a href="{{ book.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-              <div class="card-body text-center">
-                <a href="" class="grey-text">
-                  <h5>{{ book.get_category_display }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                      <input type="date" class="date" hidden data-book="{{ book.slug }}" value="{{ book.date|date:"Y-m-d" }}">
-                    <a href="{{ book.get_absolute_url }}" class="dark-grey-text">{{ book.title }}
-                      <span class="label badge badge-pill badge-success d-none" id="{{ book.slug }}">NEW</span>
-                    </a>
-                  </strong>
-                </h5>
-                <h4 class="font-weight-bold teal-text">
-                  <strong>{{ book.price }} PLN</strong>
-                </h4>
-              </div>
-            </div>
     </div>
-{% endfor %}
-</div>
+    <div class="owl-carousel carousel owl-theme">
+        {% for book in items %}
+            <div class="item p-1">
+                <div class="card">
+                    <div class="view overlay">
+                        {% for photo in book.photos.all %}
+                            {% if forloop.counter == 1 %}
+                                <img class="card-img-top" src="{{ photo.file.url }}">
+                            {% endif %}
+                        {% empty %}
+                            <img class="card-img-top" src="{% static 'core/img/def_book.png' %}">
+                        {% endfor %}
+                        <a href="{{ book.get_absolute_url }}">
+                            <div class="mask rgba-white-slight"></div>
+                        </a>
+                    </div>
+                    <div class="card-body text-center">
+                        <a href="" class="grey-text">
+                            <h5>{{ book.get_category_display }}</h5>
+                        </a>
+                        <h5>
+                            <strong>
+                                <input type="date" class="date" hidden data-book="{{ book.slug }}"
+                                       value="{{ book.date|date:"Y-m-d" }}">
+                                <a href="{{ book.get_absolute_url }}" class="dark-grey-text">{{ book.title }}
+                                    <span class="label badge badge-pill badge-success d-none"
+                                          id="{{ book.slug }}">NEW</span>
+                                </a>
+                            </strong>
+                        </h5>
+                        <h4 class="font-weight-bold teal-text">
+                            <strong>{{ book.price }} PLN</strong>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>

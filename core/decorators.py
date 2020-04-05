@@ -1,9 +1,6 @@
-from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
-from django.contrib import messages
-from django.shortcuts import HttpResponseRedirect
-from django.urls import reverse
-from books.models import Book
+from django.contrib.auth.decorators import user_passes_test
+
 
 def anonymous_required(function=None, redirect_url=None):
     '''

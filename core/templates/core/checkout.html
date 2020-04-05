@@ -1,107 +1,99 @@
 {% extends "core/base.html" %}
 {% load crispy_forms_tags %}
-
 {% block content %}
-  <main >
-    <div class="container wow fadeIn">
-      <h2 class="my-5 h2 text-center">Checkout form</h2>
-      <div class="row">
-        <div class="col-md-8 mb-4">
-          <div class="card">
-            <form class="border border-light p-5" autocomplete="off" method="POST">
-              {% csrf_token %}
-            {{ form.errors }}
-            {{ form.non_field_errors }}
-
-            <h3>Address</h3>
-                <div class="hideable_form">
-                    <div class="row">
-              <div class="md-form mb-5 col-8">
-                <input type="text" name="street_address" id="street_address" class="form-control">
-                <label for="street_address" class="ml-3">Street Address</label>
-              </div>
-              <div class="md-form mb-5 col-4">
-                <input type="text" name="apartment_address" id="apartment_address" class="form-control">
-                <label for="apartment_address" class="ml-3">Apartment Address </label>
-              </div>
+    <main>
+        <div class="container wow fadeIn">
+            <h2 class="my-5 h2 text-center">Checkout form</h2>
+            <div class="row">
+                <div class="col-md-8 mb-4">
+                    <div class="card">
+                        <form class="border border-light p-5" autocomplete="off" method="POST">
+                            {% csrf_token %}
+                            {{ form.errors }}
+                            {{ form.non_field_errors }}
+                            <h3>Address</h3>
+                            <div class="hideable_form">
+                                <div class="row">
+                                    <div class="md-form mb-5 col-8">
+                                        <input type="text" name="street_address" id="street_address"
+                                               class="form-control">
+                                        <label for="street_address" class="ml-3">Street Address</label>
+                                    </div>
+                                    <div class="md-form mb-5 col-4">
+                                        <input type="text" name="apartment_address" id="apartment_address"
+                                               class="form-control">
+                                        <label for="apartment_address" class="ml-3">Apartment Address </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-lg-4 col-md-12 mb-4">
+                                        <label for="country">Country</label>
+                                        {{ form.country }}
+                                        <div class="invalid-feedback">
+                                            Please select a valid country.
+                                        </div>
+                                    </div>
+                                    <div class="md-form col-lg-4 mb-4">
+                                        <label for="city" class="ml-3"> City</label>
+                                        <input type="text" name="city" id="city" class="form-control">
+                                        <div class="invalid-feedback">
+                                            City required.
+                                        </div>
+                                    </div>
+                                    <div class="md-form col-lg-4 mb-4">
+                                        <label for="zip" class="ml-3"> Code</label>
+                                        <input type="text" name="zip" id="zip" class="form-control">
+                                        <div class="invalid-feedback">
+                                            Zip code required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="set_default"
+                                           id="set_default">
+                                    <label class="custom-control-label" for="set_default">Save as default shipping
+                                        address</label>
+                                </div>
+                            </div>
+                            {% if default_address %}
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="use_default"
+                                           id="use_default">
+                                    <label class="custom-control-label" for="use_default">Use default
+                                        address: {{ default_address.street_address|truncatechars:15 }} {{ default_address.apartment_address }}</label>
+                                </div>
+                            {% endif %}
+                            <hr>
+                            <h3>Payment Option</h3>
+                            <div class="d-block my-3">
+                                {% for value, name in form.fields.payment_option.choices %}
+                                    <div class="custom-control custom-radio">
+                                        <input id="{{ name }}" name="payment_option" value="{{ value }}" type="radio"
+                                               class="custom-control-input" required>
+                                        <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <hr class="mb-4">
+                            <button class="btn btn-teal btn-lg btn-block" type="submit">Continue to checkout</button>
+                        </form>
                     </div>
-
-              <div class="row">
-                <div class=" col-lg-4 col-md-12 mb-4">
-                  <label for="country">Country</label>
-                  {{ form.country }}
-                  <div class="invalid-feedback">
-                    Please select a valid country.
-                  </div>
                 </div>
-                <div class="md-form col-lg-4 mb-4">
-                  <label for="city" class="ml-3"> City</label>
-                  <input type="text" name="city" id="city" class="form-control">
-                  <div class="invalid-feedback">
-                    City required.
-                  </div>
+                <div class="col-md-4 mb-4">
+                    {% include 'core/includes/summary.html' %}
                 </div>
-                  <div class="md-form col-lg-4 mb-4">
-                  <label for="zip" class="ml-3"> Code</label>
-                  <input type="text" name="zip" id="zip" class="form-control">
-                  <div class="invalid-feedback">
-                    Zip code required.
-                  </div>
-                </div>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="set_default" id="set_default">
-                <label class="custom-control-label" for="set_default">Save as default shipping address</label>
-              </div>
-                </div>
-                {% if default_address %}
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="use_default" id="use_default">
-                <label class="custom-control-label" for="use_default">Use default address: {{ default_address.street_address|truncatechars:15 }} {{ default_address.apartment_address }}</label>
-              </div>
-              {% endif %}
-
-              <hr>
-
-            <h3>Payment Option</h3>
-
-              <div class="d-block my-3">
-                {% for value, name in form.fields.payment_option.choices %}
-                <div class="custom-control custom-radio">
-                  <input id="{{ name }}" name="payment_option" value="{{ value }}" type="radio" class="custom-control-input" required>
-                  <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
-                </div>
-                {% endfor %}
-              </div>
-              <hr class="mb-4">
-              <button class="btn btn-teal btn-lg btn-block" type="submit">Continue to checkout</button>
-            </form>
-          </div>
+            </div>
         </div>
-
-        <div class="col-md-4 mb-4">
-        {% include 'core/includes/summary.html' %}
-        </div>
-      </div>
-    </div>
-  </main>
-
+    </main>
 {% endblock content %}
-
 {% block javascript %}
     <script>
-
-    $(document).ready(function() {
-        let use_default = document.querySelector("input[name=use_default]");
-        let hideable_form = $('.hideable_form');
-
-        $(use_default).change(function () {
-            hideable_form.slideToggle();
+        $(document).ready(function () {
+            let use_default = document.querySelector("input[name=use_default]");
+            let hideable_form = $('.hideable_form');
+            $(use_default).change(function () {
+                hideable_form.slideToggle();
+            });
         });
-
-
-    });
-
-</script>
-
+    </script>
 {% endblock %}
