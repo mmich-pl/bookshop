@@ -17,9 +17,16 @@ First, clone the repository to your local machine:
 ```bash
 git clone https://github.com/izielin/bookshop.git
 ```
-Create virtual environment
+
+Move to folder:
+```bash
+cd bookshop/
+```
+
+Create virtual environment and activate it:
 ```bash
 python -m venv venv
+source pve3/bin/activate  
 ```
 
 Install the requirements:
