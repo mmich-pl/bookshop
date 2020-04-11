@@ -26,7 +26,12 @@ cd bookshop/
 Create virtual environment and activate it:
 ```bash
 python -m venv venv
-source pve3/bin/activate  
+
+on linux:
+source venv/bin/activate  
+
+on windows:
+source venv/scripts/activate
 ```
 
 Install the requirements:
